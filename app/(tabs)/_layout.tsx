@@ -17,7 +17,7 @@ export default function TabLayout() {
           height: 85,
         },
         tabBarLabelStyle: {
-          fontSize: 12,
+          fontSize: 11,
           marginTop: 4,
         },
       }}>
@@ -27,6 +27,15 @@ export default function TabLayout() {
           title: 'Buscar',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="search" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="reference"
+        options={{
+          title: 'Referência',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="body-outline" size={size} color={color} />
           ),
         }}
       />

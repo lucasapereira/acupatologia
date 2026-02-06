@@ -1,8 +1,16 @@
 import { acupatologiaData, AcupatologiaEntry } from '@/data/acupatologia';
-import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
-import { useMemo, useState } from 'react';
 import {
+  AnatomyRegionId,
+  extractPoints,
+  getPointRegion,
+  REGION_NAMES
+} from '@/data/pointMapping';
+import { Ionicons } from '@expo/vector-icons';
+import { Image } from 'expo-image';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useCallback, useMemo, useState } from 'react';
+import {
+  Dimensions,
   FlatList,
   Modal,
   ScrollView,
@@ -15,12 +23,26 @@ import {
 } from 'react-native';
 
 const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
+
+// Anatomy images
+const ANATOMY_IMAGES: Record<AnatomyRegionId, any> = {
+  'body_front': require('@/assets/images/anatomy/body_front.png'),
+  'body_back': require('@/assets/images/anatomy/body_back.png'),
+  'head_face': require('@/assets/images/anatomy/head_face.png'),
+  'hand_arm': require('@/assets/images/anatomy/hand_arm.png'),
+};
 
 export default function HomeScreen() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedLetter, setSelectedLetter] = useState<string | null>(null);
   const [selectedEntry, setSelectedEntry] = useState<AcupatologiaEntry | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
+
+  // State for anatomy image modal
+  const [anatomyModalVisible, setAnatomyModalVisible] = useState(false);
+  const [selectedRegion, setSelectedRegion] = useState<AnatomyRegionId | null>(null);
+  const [selectedPointName, setSelectedPointName] = useState<string>('');
 
   const filteredData = useMemo(() => {
     let result = acupatologiaData;
@@ -50,6 +72,77 @@ export default function HomeScreen() {
     setSearchQuery('');
     setSelectedLetter(null);
   };
+
+  const openAnatomyImage = useCallback((point: string, region: AnatomyRegionId) => {
+    setSelectedPointName(point);
+    setSelectedRegion(region);
+    setAnatomyModalVisible(true);
+  }, []);
+
+  // Render points text with clickable links
+  const renderPointsWithLinks = useCallback((text: string) => {
+    const extractedPoints = extractPoints(text);
+    const pointsWithRegion = extractedPoints
+      .map(p => ({ point: p, region: getPointRegion(p) }))
+      .filter(p => p.region !== null);
+
+    if (pointsWithRegion.length === 0) {
+      return <Text style={styles.modalPoints}>{text}</Text>;
+    }
+
+    // Create a regex to match all points that have images
+    const pointPatterns = pointsWithRegion.map(p => p.point).join('|');
+    const regex = new RegExp(`(${pointPatterns})`, 'gi');
+
+    const parts = text.split(regex);
+
+    return (
+      <Text style={styles.modalPoints}>
+        {parts.map((part, index) => {
+          const matchingPoint = pointsWithRegion.find(
+            p => p.point.toUpperCase() === part.toUpperCase()
+          );
+
+          if (matchingPoint && matchingPoint.region) {
+            return (
+              <Text
+                key={index}
+                style={styles.linkablePoint}
+                onPress={() => openAnatomyImage(matchingPoint.point, matchingPoint.region!)}
+              >
+                {part}
+                <Ionicons name="image-outline" size={12} color="#8B5CF6" />
+              </Text>
+            );
+          }
+          return <Text key={index}>{part}</Text>;
+        })}
+      </Text>
+    );
+  }, [openAnatomyImage]);
+
+  // Get unique points with images for quick access
+  const getQuickAccessPoints = useCallback((text: string) => {
+    const extractedPoints = extractPoints(text);
+    const pointsWithRegion = extractedPoints
+      .map(p => ({ point: p, region: getPointRegion(p) }))
+      .filter(p => p.region !== null);
+
+    // Group by region and keep unique
+    const byRegion = new Map<AnatomyRegionId, string[]>();
+    pointsWithRegion.forEach(({ point, region }) => {
+      if (region) {
+        if (!byRegion.has(region)) {
+          byRegion.set(region, []);
+        }
+        if (!byRegion.get(region)!.includes(point)) {
+          byRegion.get(region)!.push(point);
+        }
+      }
+    });
+
+    return byRegion;
+  }, []);
 
   const renderItem = ({ item }: { item: AcupatologiaEntry }) => (
     <TouchableOpacity
@@ -224,12 +317,103 @@ export default function HomeScreen() {
 
                   <View style={styles.divider} />
 
+                  {/* Quick Access to Images */}
+                  {selectedEntry && getQuickAccessPoints(selectedEntry.points).size > 0 && (
+                    <View style={styles.quickAccessSection}>
+                      <Text style={styles.quickAccessTitle}>
+                        <Ionicons name="images-outline" size={14} color="#10b981" /> Ver na Imagem Anatômica
+                      </Text>
+                      <View style={styles.quickAccessGrid}>
+                        {Array.from(getQuickAccessPoints(selectedEntry.points)).map(([region, points]) => (
+                          <TouchableOpacity
+                            key={region}
+                            style={styles.quickAccessCard}
+                            onPress={() => openAnatomyImage(points[0], region)}
+                          >
+                            <Image
+                              source={ANATOMY_IMAGES[region]}
+                              style={styles.quickAccessImage}
+                              contentFit="cover"
+                            />
+                            <View style={styles.quickAccessInfo}>
+                              <Text style={styles.quickAccessRegion}>{REGION_NAMES[region]}</Text>
+                              <Text style={styles.quickAccessPoints} numberOfLines={1}>
+                                {points.slice(0, 4).join(', ')}{points.length > 4 ? '...' : ''}
+                              </Text>
+                            </View>
+                          </TouchableOpacity>
+                        ))}
+                      </View>
+                    </View>
+                  )}
+
+                  <View style={styles.divider} />
+
                   <Text style={styles.pointsLabel}>
-                    <Ionicons name="locate" size={16} color="#8B5CF6" /> Pontos de
-                    Acupuntura
+                    <Ionicons name="locate" size={16} color="#8B5CF6" /> Pontos de Acupuntura
                   </Text>
-                  <Text style={styles.modalPoints}>{selectedEntry?.points}</Text>
+                  <Text style={styles.pointsHint}>
+                    Toque nos pontos destacados para ver na imagem
+                  </Text>
+                  {selectedEntry && renderPointsWithLinks(selectedEntry.points)}
                 </ScrollView>
+              </LinearGradient>
+            </View>
+          </View>
+        </Modal>
+
+        {/* Anatomy Image Modal */}
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={anatomyModalVisible}
+          onRequestClose={() => setAnatomyModalVisible(false)}
+        >
+          <View style={styles.anatomyModalOverlay}>
+            <View style={styles.anatomyModalContent}>
+              <LinearGradient
+                colors={['#2d1b4e', '#1a1a2e']}
+                style={styles.anatomyModalGradient}
+              >
+                <View style={styles.anatomyModalHeader}>
+                  <View>
+                    <Text style={styles.anatomyModalTitle}>
+                      {selectedRegion ? REGION_NAMES[selectedRegion] : ''}
+                    </Text>
+                    <Text style={styles.anatomyModalSubtitle}>
+                      Ponto: {selectedPointName}
+                    </Text>
+                  </View>
+                  <TouchableOpacity
+                    style={styles.closeButton}
+                    onPress={() => setAnatomyModalVisible(false)}
+                  >
+                    <Ionicons name="close" size={24} color="#fff" />
+                  </TouchableOpacity>
+                </View>
+
+                <ScrollView
+                  style={styles.anatomyScrollView}
+                  contentContainerStyle={styles.anatomyScrollContent}
+                  maximumZoomScale={3}
+                  minimumZoomScale={1}
+                  bouncesZoom={true}
+                >
+                  {selectedRegion && (
+                    <Image
+                      source={ANATOMY_IMAGES[selectedRegion]}
+                      style={styles.anatomyImage}
+                      contentFit="contain"
+                    />
+                  )}
+                </ScrollView>
+
+                <View style={styles.anatomyModalFooter}>
+                  <Ionicons name="information-circle" size={16} color="#8B5CF6" />
+                  <Text style={styles.anatomyModalHint}>
+                    Pinça para dar zoom na imagem
+                  </Text>
+                </View>
               </LinearGradient>
             </View>
           </View>
@@ -404,7 +588,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   modalContent: {
-    maxHeight: '85%',
+    maxHeight: '90%',
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
     overflow: 'hidden',
@@ -453,19 +637,129 @@ const styles = StyleSheet.create({
   divider: {
     height: 1,
     backgroundColor: 'rgba(139, 92, 246, 0.3)',
-    marginVertical: 20,
+    marginVertical: 16,
+  },
+  quickAccessSection: {
+    marginBottom: 8,
+  },
+  quickAccessTitle: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#10b981',
+    marginBottom: 12,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  quickAccessGrid: {
+    gap: 10,
+  },
+  quickAccessCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+    borderRadius: 12,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: 'rgba(16, 185, 129, 0.3)',
+  },
+  quickAccessImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 8,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  quickAccessInfo: {
+    flex: 1,
+    marginLeft: 12,
+  },
+  quickAccessRegion: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#fff',
+    marginBottom: 2,
+  },
+  quickAccessPoints: {
+    fontSize: 12,
+    color: '#10b981',
   },
   pointsLabel: {
     fontSize: 14,
     fontWeight: '600',
     color: '#8B5CF6',
-    marginBottom: 12,
+    marginBottom: 4,
     textTransform: 'uppercase',
     letterSpacing: 1,
+  },
+  pointsHint: {
+    fontSize: 11,
+    color: '#666',
+    marginBottom: 12,
+    fontStyle: 'italic',
   },
   modalPoints: {
     fontSize: 16,
     color: '#ddd',
     lineHeight: 26,
+  },
+  linkablePoint: {
+    color: '#10b981',
+    fontWeight: '600',
+    textDecorationLine: 'underline',
+  },
+  // Anatomy Modal Styles
+  anatomyModalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.9)',
+    justifyContent: 'center',
+  },
+  anatomyModalContent: {
+    flex: 1,
+    margin: 16,
+    borderRadius: 24,
+    overflow: 'hidden',
+  },
+  anatomyModalGradient: {
+    flex: 1,
+    padding: 20,
+  },
+  anatomyModalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 16,
+  },
+  anatomyModalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  anatomyModalSubtitle: {
+    fontSize: 14,
+    color: '#10b981',
+    marginTop: 4,
+  },
+  anatomyScrollView: {
+    flex: 1,
+  },
+  anatomyScrollContent: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexGrow: 1,
+  },
+  anatomyImage: {
+    width: SCREEN_WIDTH - 72,
+    height: SCREEN_WIDTH - 72,
+    borderRadius: 16,
+  },
+  anatomyModalFooter: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 16,
+    gap: 6,
+  },
+  anatomyModalHint: {
+    fontSize: 12,
+    color: '#888',
   },
 });

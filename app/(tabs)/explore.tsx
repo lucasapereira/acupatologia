@@ -1,8 +1,10 @@
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useRouter } from 'expo-router';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function AboutScreen() {
+  const router = useRouter();
   return (
     <View style={styles.container}>
       <LinearGradient
@@ -63,6 +65,18 @@ export default function AboutScreen() {
               Este aplicativo é apenas para referência educacional. Sempre consulte
               um profissional de saúde qualificado antes de qualquer tratamento.
             </Text>
+          </View>
+
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Legal</Text>
+            <TouchableOpacity
+              style={styles.legalButton}
+              onPress={() => router.push('/legal')}
+            >
+              <Ionicons name="document-text-outline" size={24} color="#8B5CF6" />
+              <Text style={styles.legalButtonText}>Termos de Uso e Privacidade</Text>
+              <Ionicons name="chevron-forward" size={20} color="#666" />
+            </TouchableOpacity>
           </View>
 
           <Text style={styles.footer}>
@@ -159,6 +173,21 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     borderLeftWidth: 3,
     borderLeftColor: '#f59e0b',
+  },
+  legalButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    padding: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(139, 92, 246, 0.2)',
+  },
+  legalButtonText: {
+    flex: 1,
+    fontSize: 16,
+    color: '#fff',
+    marginLeft: 12,
   },
   footer: {
     textAlign: 'center',
