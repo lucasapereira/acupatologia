@@ -43,6 +43,7 @@ export default function HomeScreen() {
   const [anatomyModalVisible, setAnatomyModalVisible] = useState(false);
   const [selectedRegion, setSelectedRegion] = useState<AnatomyRegionId | null>(null);
   const [selectedPointName, setSelectedPointName] = useState<string>('');
+  const [zoomScale, setZoomScale] = useState(1);
 
   const filteredData = useMemo(() => {
     let result = acupatologiaData;
@@ -76,6 +77,7 @@ export default function HomeScreen() {
   const openAnatomyImage = useCallback((point: string, region: AnatomyRegionId) => {
     setSelectedPointName(point);
     setSelectedRegion(region);
+    setZoomScale(1);
     setAnatomyModalVisible(true);
   }, []);
 
@@ -392,26 +394,61 @@ export default function HomeScreen() {
                   </TouchableOpacity>
                 </View>
 
-                <ScrollView
-                  style={styles.anatomyScrollView}
-                  contentContainerStyle={styles.anatomyScrollContent}
-                  maximumZoomScale={3}
-                  minimumZoomScale={1}
-                  bouncesZoom={true}
-                >
-                  {selectedRegion && (
-                    <Image
-                      source={ANATOMY_IMAGES[selectedRegion]}
-                      style={styles.anatomyImage}
-                      contentFit="contain"
-                    />
-                  )}
-                </ScrollView>
+                <View style={styles.imageContainer}>
+                  <ScrollView
+                    maximumZoomScale={3}
+                    minimumZoomScale={1}
+                    centerContent={true}
+                    showsVerticalScrollIndicator={false}
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
+                  >
+                    <ScrollView
+                      horizontal={true}
+                      maximumZoomScale={3}
+                      minimumZoomScale={1}
+                      centerContent={true}
+                      showsHorizontalScrollIndicator={false}
+                      showsVerticalScrollIndicator={false}
+                      contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
+                    >
+                      {selectedRegion && (
+                        <Image
+                          source={ANATOMY_IMAGES[selectedRegion]}
+                          style={[
+                            styles.anatomyImage,
+                            {
+                              width: SCREEN_WIDTH * zoomScale,
+                              height: SCREEN_WIDTH * zoomScale
+                            }
+                          ]}
+                          contentFit="contain"
+                        />
+                      )}
+                    </ScrollView>
+                  </ScrollView>
+
+                  {/* Zoom Controls Overlay */}
+                  <View style={styles.zoomControls}>
+                    <TouchableOpacity
+                      style={styles.zoomButton}
+                      onPress={() => setZoomScale(Math.min(zoomScale + 0.5, 3))}
+                    >
+                      <Ionicons name="add" size={24} color="#fff" />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.zoomButton}
+                      onPress={() => setZoomScale(Math.max(zoomScale - 0.5, 1))}
+                    >
+                      <Ionicons name="remove" size={24} color="#fff" />
+                    </TouchableOpacity>
+                  </View>
+                </View>
 
                 <View style={styles.anatomyModalFooter}>
-                  <Ionicons name="information-circle" size={16} color="#8B5CF6" />
+                  <Ionicons name="search" size={16} color="#8B5CF6" />
                   <Text style={styles.anatomyModalHint}>
-                    Pinça para dar zoom na imagem
+                    Use os botões para zoom
                   </Text>
                 </View>
               </LinearGradient>
@@ -594,6 +631,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   modalGradient: {
+    flex: 1, // Ensure gradient fills the modalContent container
     padding: 24,
     paddingBottom: 40,
   },
@@ -602,6 +640,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 20,
+    flexShrink: 0, // Ensure header doesn't shrink
   },
   modalLetterBadge: {
     width: 48,
@@ -625,7 +664,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalScroll: {
-    maxHeight: '100%',
+    flex: 1, // Use flex to take remaining space allowing scroll
   },
   modalTitle: {
     fontSize: 24,
@@ -738,18 +777,17 @@ const styles = StyleSheet.create({
     color: '#10b981',
     marginTop: 4,
   },
-  anatomyScrollView: {
-    flex: 1,
-  },
-  anatomyScrollContent: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexGrow: 1,
+
+  imageContainer: {
+    height: SCREEN_WIDTH, // Square container
+    width: '100%',
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    borderRadius: 16,
+    overflow: 'hidden',
   },
   anatomyImage: {
-    width: SCREEN_WIDTH - 72,
-    height: SCREEN_WIDTH - 72,
-    borderRadius: 16,
+    width: SCREEN_WIDTH,
+    height: SCREEN_WIDTH,
   },
   anatomyModalFooter: {
     flexDirection: 'row',
@@ -761,5 +799,22 @@ const styles = StyleSheet.create({
   anatomyModalHint: {
     fontSize: 12,
     color: '#888',
+  },
+  zoomControls: {
+    position: 'absolute',
+    bottom: 16,
+    right: 16,
+    flexDirection: 'column',
+    gap: 8,
+  },
+  zoomButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(139, 92, 246, 0.8)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
   },
 });
