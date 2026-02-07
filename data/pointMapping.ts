@@ -184,7 +184,7 @@ export const REGION_NAMES: Record<AnatomyRegionId, string> = {
 export function extractPoints(text: string): string[] {
     // Match patterns like E36, BP6, IG4, VC12, VG14, etc.
     const pointPattern = /\b(E|BP|B|R|F|P|IG|ID|C|TA|CS|VC|VG|VB)\d+\b/gi;
-    const matches = text.match(pointPattern) || [];
+    const matches: string[] = text.match(pointPattern) || [];
 
     // Also match special points like Yintang, Taiyang
     const specialPoints = ['Yintang', 'Taiyang'];

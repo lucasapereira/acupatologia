@@ -183,126 +183,128 @@ export default function HomeScreen() {
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
       <LinearGradient
-        colors={['#2d1b4e', '#1b1b2f', '#1a1a2e']}
-        style={styles.header}
+        colors={['#2d1b4e', '#1b1b2f', '#0f0f23']}
+        style={{ flex: 1 }}
       >
-        <Text style={styles.title}>Acupatologia</Text>
-        <Text style={styles.subtitle}>Guia de Acupuntura</Text>
+        <View style={styles.header}>
+          <Text style={styles.title}>Acupatologia</Text>
+          <Text style={styles.subtitle}>Guia de Acupuntura</Text>
 
-        <View style={styles.searchContainer}>
-          <Ionicons name="search" size={20} color="#666" style={styles.searchIcon} />
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Buscar patologia, ponto..."
-            placeholderTextColor="#999"
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-          />
-          {searchQuery.length > 0 && (
-            <TouchableOpacity onPress={() => setSearchQuery('')}>
-              <Ionicons name="close-circle" size={20} color="#666" />
-            </TouchableOpacity>
-          )}
-        </View>
-      </LinearGradient>
-
-      {/* Category Tabs */}
-      <View style={styles.categoryContainer}>
-        {CATEGORIES.map((cat) => (
-          <TouchableOpacity
-            key={cat}
-            style={[
-              styles.categoryTab,
-              selectedCategory === cat && styles.categoryTabSelected
-            ]}
-            onPress={() => {
-              setSelectedCategory(cat);
-              setSelectedLetter(null); // Reset letter filter when changing category
-            }}
-          >
-            <Text
-              style={[
-                styles.categoryText,
-                selectedCategory === cat && styles.categoryTextSelected
-              ]}
-            >
-              {cat}s
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-
-      {!searchQuery && (
-        <View style={styles.alphabetContainer}>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.alphabetScroll}>
-            <TouchableOpacity
-              style={[
-                styles.letterButton,
-                { width: 'auto', paddingHorizontal: 12 },
-                !selectedLetter && styles.letterButtonSelected,
-              ]}
-              onPress={() => setSelectedLetter(null)}
-            >
-              <Text
-                style={[
-                  styles.letterText,
-                  selectedLetter === null && styles.letterTextSelected,
-                ]}
-              >
-                Todos
-              </Text>
-            </TouchableOpacity>
-            {ALPHABET.map((letter) => {
-              const hasEntries = acupunctureData.some(
-                (item) => item.category === selectedCategory && item.name.startsWith(letter)
-              );
-              return (
-                <TouchableOpacity
-                  key={letter}
-                  style={[
-                    styles.letterButton,
-                    selectedLetter === letter && styles.letterButtonSelected,
-                    !hasEntries && styles.letterButtonDisabled,
-                  ]}
-                  onPress={() => hasEntries && setSelectedLetter(letter)}
-                  disabled={!hasEntries}
-                >
-                  <Text
-                    style={[
-                      styles.letterText,
-                      selectedLetter === letter && styles.letterTextSelected,
-                      !hasEntries && styles.letterTextDisabled,
-                    ]}
-                  >
-                    {letter}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
-          </ScrollView>
-        </View>
-      )}
-
-      <FlatList
-        data={filteredData}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.listContent}
-        initialNumToRender={20}
-        maxToRenderPerBatch={20}
-        windowSize={10}
-        ListEmptyComponent={
-          <View style={styles.emptyContainer}>
-            <Ionicons name="documents-outline" size={48} color="#ccc" />
-            <Text style={styles.emptyText}>Nenhum item encontrado</Text>
-            {(searchQuery || selectedLetter) && (
-              <TouchableOpacity style={styles.clearButton} onPress={clearFilters}>
-                <Text style={styles.clearButtonText}>Limpar filtros</Text>
+          <View style={styles.searchContainer}>
+            <Ionicons name="search" size={20} color="#666" style={styles.searchIcon} />
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Buscar patologia, ponto..."
+              placeholderTextColor="#999"
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+            />
+            {searchQuery.length > 0 && (
+              <TouchableOpacity onPress={() => setSearchQuery('')}>
+                <Ionicons name="close-circle" size={20} color="#666" />
               </TouchableOpacity>
             )}
           </View>
-        }
-      />
+        </View>
+
+        {/* Category Tabs */}
+        <View style={styles.categoryContainer}>
+          {CATEGORIES.map((cat) => (
+            <TouchableOpacity
+              key={cat}
+              style={[
+                styles.categoryTab,
+                selectedCategory === cat && styles.categoryTabSelected
+              ]}
+              onPress={() => {
+                setSelectedCategory(cat);
+                setSelectedLetter(null); // Reset letter filter when changing category
+              }}
+            >
+              <Text
+                style={[
+                  styles.categoryText,
+                  selectedCategory === cat && styles.categoryTextSelected
+                ]}
+              >
+                {cat}s
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+
+        {!searchQuery && (
+          <View style={styles.alphabetContainer}>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.alphabetScroll}>
+              <TouchableOpacity
+                style={[
+                  styles.letterButton,
+                  { width: 'auto', paddingHorizontal: 12 },
+                  !selectedLetter && styles.letterButtonSelected,
+                ]}
+                onPress={() => setSelectedLetter(null)}
+              >
+                <Text
+                  style={[
+                    styles.letterText,
+                    selectedLetter === null && styles.letterTextSelected,
+                  ]}
+                >
+                  Todos
+                </Text>
+              </TouchableOpacity>
+              {ALPHABET.map((letter) => {
+                const hasEntries = acupunctureData.some(
+                  (item) => item.category === selectedCategory && item.name.startsWith(letter)
+                );
+                return (
+                  <TouchableOpacity
+                    key={letter}
+                    style={[
+                      styles.letterButton,
+                      selectedLetter === letter && styles.letterButtonSelected,
+                      !hasEntries && styles.letterButtonDisabled,
+                    ]}
+                    onPress={() => hasEntries && setSelectedLetter(letter)}
+                    disabled={!hasEntries}
+                  >
+                    <Text
+                      style={[
+                        styles.letterText,
+                        selectedLetter === letter && styles.letterTextSelected,
+                        !hasEntries && styles.letterTextDisabled,
+                      ]}
+                    >
+                      {letter}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </ScrollView>
+          </View>
+        )}
+
+        <FlatList
+          data={filteredData}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={styles.listContent}
+          initialNumToRender={20}
+          maxToRenderPerBatch={20}
+          windowSize={10}
+          ListEmptyComponent={
+            <View style={styles.emptyContainer}>
+              <Ionicons name="documents-outline" size={48} color="#ccc" />
+              <Text style={styles.emptyText}>Nenhum item encontrado</Text>
+              {(searchQuery || selectedLetter) && (
+                <TouchableOpacity style={styles.clearButton} onPress={clearFilters}>
+                  <Text style={styles.clearButtonText}>Limpar filtros</Text>
+                </TouchableOpacity>
+              )}
+            </View>
+          }
+        />
+      </LinearGradient>
 
       {/* Detail Modal */}
       <Modal
@@ -529,9 +531,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingHorizontal: 16,
     paddingVertical: 12,
-    backgroundColor: '#1a1a2e',
+    backgroundColor: 'rgba(0, 0, 0, 0.2)',
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255, 255, 255, 0.1)',
+    borderBottomColor: 'rgba(255, 255, 255, 0.05)',
   },
   categoryTab: {
     flex: 1,
@@ -553,10 +555,10 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   alphabetContainer: {
-    backgroundColor: '#1a1a2e',
+    backgroundColor: 'rgba(0, 0, 0, 0.2)',
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255, 255, 255, 0.1)',
+    borderBottomColor: 'rgba(255, 255, 255, 0.05)',
   },
   alphabetScroll: {
     paddingHorizontal: 16,
@@ -592,32 +594,34 @@ const styles = StyleSheet.create({
     paddingBottom: 80,
   },
   itemContainer: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    borderRadius: 16,
     padding: 16,
     marginBottom: 12,
     flexDirection: 'row',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
+    borderWidth: 1,
+    borderColor: 'rgba(139, 92, 246, 0.2)',
   },
   itemContent: {
     flex: 1,
     marginRight: 12,
   },
   itemTitle: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#fff',
     marginBottom: 4,
   },
   itemDescription: {
     fontSize: 14,
-    color: '#666',
-    lineHeight: 20,
+    color: '#ccc',
+    marginBottom: 4,
+  },
+  itemSnippet: {
+    fontSize: 12,
+    color: '#8B5CF6',
+    fontStyle: 'italic',
   },
   emptyContainer: {
     alignItems: 'center',
