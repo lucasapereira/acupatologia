@@ -1,3 +1,4 @@
+import { ZoomableImage } from '@/components/ZoomableImage';
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -11,6 +12,7 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -56,11 +58,9 @@ const ANATOMY_REGIONS: AnatomyRegion[] = [
 export default function ReferenceScreen() {
     const [selectedRegion, setSelectedRegion] = useState<AnatomyRegion | null>(null);
     const [modalVisible, setModalVisible] = useState(false);
-    const [zoomScale, setZoomScale] = useState(1);
 
     const openRegion = (region: AnatomyRegion) => {
         setSelectedRegion(region);
-        setZoomScale(1);
         setModalVisible(true);
     };
 
@@ -121,91 +121,58 @@ export default function ReferenceScreen() {
                 >
                     <View style={styles.modalOverlay}>
                         <View style={styles.modalContent}>
-                            <LinearGradient
-                                colors={['#2d1b4e', '#1a1a2e']}
-                                style={styles.modalGradient}
-                            >
-                                <View style={styles.modalHeader}>
-                                    <Text style={styles.modalTitle}>{selectedRegion?.title}</Text>
-                                    <TouchableOpacity
-                                        style={styles.closeButton}
-                                        onPress={() => setModalVisible(false)}
-                                    >
-                                        <Ionicons name="close" size={24} color="#fff" />
-                                    </TouchableOpacity>
-                                </View>
-
-                                <View style={styles.imageContainer}>
-                                    <ScrollView
-                                        maximumZoomScale={3}
-                                        minimumZoomScale={1}
-                                        centerContent={true}
-                                        showsVerticalScrollIndicator={false}
-                                        showsHorizontalScrollIndicator={false}
-                                        contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
-                                    >
-                                        <ScrollView
-                                            horizontal={true}
-                                            maximumZoomScale={3}
-                                            minimumZoomScale={1}
-                                            centerContent={true}
-                                            showsHorizontalScrollIndicator={false}
-                                            showsVerticalScrollIndicator={false}
-                                            contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
+                            <GestureHandlerRootView style={{ flex: 1 }}>
+                                <LinearGradient
+                                    colors={['#2d1b4e', '#1a1a2e']}
+                                    style={styles.modalGradient}
+                                >
+                                    <View style={styles.modalHeader}>
+                                        <Text style={styles.modalTitle}>{selectedRegion?.title}</Text>
+                                        <TouchableOpacity
+                                            style={styles.closeButton}
+                                            onPress={() => setModalVisible(false)}
                                         >
+                                            <Ionicons name="close" size={24} color="#fff" />
+                                        </TouchableOpacity>
+                                    </View>
+
+                                    <ScrollView
+                                        style={{ flex: 1 }}
+                                        showsVerticalScrollIndicator={false}
+                                        contentContainerStyle={{ paddingBottom: 40 }}
+                                    >
+                                        <View style={styles.imageContainer}>
                                             {selectedRegion && (
-                                                <Image
+                                                <ZoomableImage
                                                     source={selectedRegion.image}
-                                                    style={[
-                                                        styles.modalImage,
-                                                        {
-                                                            width: SCREEN_WIDTH * zoomScale,
-                                                            height: SCREEN_WIDTH * zoomScale
-                                                        }
-                                                    ]}
-                                                    contentFit="contain"
+                                                    width={SCREEN_WIDTH}
+                                                    height={SCREEN_WIDTH}
                                                 />
                                             )}
-                                        </ScrollView>
-                                    </ScrollView>
-
-                                    {/* Zoom Controls Overlay */}
-                                    <View style={styles.zoomControls}>
-                                        <TouchableOpacity
-                                            style={styles.zoomButton}
-                                            onPress={() => setZoomScale(Math.min(zoomScale + 0.5, 3))}
-                                        >
-                                            <Ionicons name="add" size={24} color="#fff" />
-                                        </TouchableOpacity>
-                                        <TouchableOpacity
-                                            style={styles.zoomButton}
-                                            onPress={() => setZoomScale(Math.max(zoomScale - 0.5, 1))}
-                                        >
-                                            <Ionicons name="remove" size={24} color="#fff" />
-                                        </TouchableOpacity>
-                                    </View>
-                                </View>
-
-                                <View style={styles.modalFooter}>
-                                    <View style={styles.zoomHintContainer}>
-                                        <Ionicons name="search" size={14} color="#8B5CF6" />
-                                        <Text style={styles.zoomHintText}>Use os botões para zoom</Text>
-                                    </View>
-                                    <Text style={styles.modalDescription}>
-                                        {selectedRegion?.description}
-                                    </Text>
-                                    <View style={styles.pointsContainer}>
-                                        <Text style={styles.pointsTitle}>Pontos principais:</Text>
-                                        <View style={styles.pointsRow}>
-                                            {selectedRegion?.points.map((point) => (
-                                                <View key={point} style={styles.pointBadge}>
-                                                    <Text style={styles.pointText}>{point}</Text>
-                                                </View>
-                                            ))}
                                         </View>
-                                    </View>
-                                </View>
-                            </LinearGradient>
+
+                                        <View style={styles.modalFooter}>
+                                            <View style={styles.zoomHintContainer}>
+                                                <Ionicons name="hand-left" size={14} color="#8B5CF6" />
+                                                <Text style={styles.zoomHintText}>Pinça para zoom • Arraste para mover (V2)</Text>
+                                            </View>
+                                            <Text style={styles.modalDescription}>
+                                                {selectedRegion?.description}
+                                            </Text>
+                                            <View style={styles.pointsContainer}>
+                                                <Text style={styles.pointsTitle}>Pontos principais:</Text>
+                                                <View style={styles.pointsRow}>
+                                                    {selectedRegion?.points.map((point) => (
+                                                        <View key={point} style={styles.pointBadge}>
+                                                            <Text style={styles.pointText}>{point}</Text>
+                                                        </View>
+                                                    ))}
+                                                </View>
+                                            </View>
+                                        </View>
+                                    </ScrollView>
+                                </LinearGradient>
+                            </GestureHandlerRootView>
                         </View>
                     </View>
                 </Modal>
@@ -341,10 +308,7 @@ const styles = StyleSheet.create({
         borderRadius: 16,
         overflow: 'hidden',
     },
-    modalImage: {
-        width: SCREEN_WIDTH,
-        height: SCREEN_WIDTH,
-    },
+    // Unused styles removed
     pointsContainer: {
         marginTop: 8,
     },
@@ -373,23 +337,6 @@ const styles = StyleSheet.create({
         fontSize: 12,
         color: '#8B5CF6',
         fontWeight: '600',
-    },
-    zoomControls: {
-        position: 'absolute',
-        bottom: 16,
-        right: 16,
-        flexDirection: 'column',
-        gap: 8,
-    },
-    zoomButton: {
-        width: 40,
-        height: 40,
-        borderRadius: 20,
-        backgroundColor: 'rgba(139, 92, 246, 0.8)',
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderWidth: 1,
-        borderColor: 'rgba(255, 255, 255, 0.3)',
     },
     zoomHintContainer: {
         flexDirection: 'row',
