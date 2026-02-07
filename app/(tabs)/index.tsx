@@ -1,4 +1,8 @@
-import { acupatologiaData, AcupatologiaEntry } from '@/data/acupatologia';
+import {
+  acupunctureData,
+  AcupunctureException,
+  CategoryType,
+} from '@/data/acupatologia';
 import {
   AnatomyRegionId,
   extractPoints,
@@ -33,10 +37,13 @@ const ANATOMY_IMAGES: Record<AnatomyRegionId, any> = {
   'hand_arm': require('@/assets/images/anatomy/hand_arm.png'),
 };
 
+const CATEGORIES: CategoryType[] = ['Patologia', 'Síndrome', 'Ponto'];
+
 export default function HomeScreen() {
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<CategoryType>('Patologia');
   const [selectedLetter, setSelectedLetter] = useState<string | null>(null);
-  const [selectedEntry, setSelectedEntry] = useState<AcupatologiaEntry | null>(null);
+  const [selectedEntry, setSelectedEntry] = useState<AcupunctureException | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
 
   // State for anatomy image modal
@@ -46,28 +53,30 @@ export default function HomeScreen() {
   const [zoomScale, setZoomScale] = useState(1);
 
   const filteredData = useMemo(() => {
-    let result = acupatologiaData;
+    let result = acupunctureData || [];
 
-    if (selectedLetter) {
-      result = result.filter((item) => item.letter === selectedLetter);
+    // First filter by category
+    result = result.filter(item => item.category === selectedCategory);
+
+    // Filter by Letter if no search query
+    if (selectedLetter && !searchQuery.trim()) {
+      // Check if name starts with letter (case insensitive)
+      result = result.filter((item) =>
+        item.name.trim().toUpperCase().startsWith(selectedLetter)
+      );
     }
 
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase().trim();
       result = result.filter(
         (item) =>
-          item.disease.toLowerCase().includes(query) ||
+          item.name.toLowerCase().includes(query) ||
           item.points.toLowerCase().includes(query)
       );
     }
 
     return result;
-  }, [searchQuery, selectedLetter]);
-
-  const openDetail = (entry: AcupatologiaEntry) => {
-    setSelectedEntry(entry);
-    setModalVisible(true);
-  };
+  }, [searchQuery, selectedCategory, selectedLetter]);
 
   const clearFilters = () => {
     setSearchQuery('');
@@ -94,6 +103,8 @@ export default function HomeScreen() {
 
     // Create a regex to match all points that have images
     const pointPatterns = pointsWithRegion.map(p => p.point).join('|');
+    // Escape special regex characters if any (points usually alphanumeric so safe-ish, but good practice)
+    // For now assuming points are alphanumeric simple strings like "IG4", "E36"
     const regex = new RegExp(`(${pointPatterns})`, 'gi');
 
     const parts = text.split(regex);
@@ -146,27 +157,25 @@ export default function HomeScreen() {
     return byRegion;
   }, []);
 
-  const renderItem = ({ item }: { item: AcupatologiaEntry }) => (
+  const handleEntryPress = (entry: AcupunctureException) => {
+    setSelectedEntry(entry);
+    setModalVisible(true);
+  };
+
+  const renderItem = ({ item }: { item: AcupunctureException }) => (
     <TouchableOpacity
-      style={styles.card}
-      onPress={() => openDetail(item)}
-      activeOpacity={0.7}
+      style={styles.itemContainer}
+      onPress={() => handleEntryPress(item)}
     >
-      <View style={styles.cardHeader}>
-        <View style={styles.letterBadge}>
-          <Text style={styles.letterBadgeText}>{item.letter}</Text>
+      <View style={styles.itemContent}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
+          <Text style={styles.itemTitle}>{item.name}</Text>
         </View>
-        <Text style={styles.cardTitle} numberOfLines={2}>
-          {item.disease}
+        <Text style={styles.itemDescription} numberOfLines={2}>
+          {item.points}
         </Text>
       </View>
-      <Text style={styles.cardPoints} numberOfLines={2}>
-        {item.points}
-      </Text>
-      <View style={styles.cardFooter}>
-        <Text style={styles.tapHint}>Toque para ver detalhes</Text>
-        <Ionicons name="chevron-forward" size={16} color="#8B5CF6" />
-      </View>
+      <Ionicons name="chevron-forward" size={20} color="#666" />
     </TouchableOpacity>
   );
 
@@ -174,69 +183,85 @@ export default function HomeScreen() {
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
       <LinearGradient
-        colors={['#1a1a2e', '#16213e', '#0f0f23']}
-        style={styles.gradient}
+        colors={['#2d1b4e', '#1b1b2f', '#1a1a2e']}
+        style={styles.header}
       >
-        {/* Header */}
-        <View style={styles.header}>
-          <Text style={styles.title}>Acupatologia</Text>
-          <Text style={styles.subtitle}>
-            {acupatologiaData.length} pontos de acupuntura
-          </Text>
-        </View>
+        <Text style={styles.title}>Acupatologia</Text>
+        <Text style={styles.subtitle}>Guia de Acupuntura</Text>
 
-        {/* Search Bar */}
         <View style={styles.searchContainer}>
-          <View style={styles.searchBar}>
-            <Ionicons name="search" size={20} color="#8B5CF6" />
-            <TextInput
-              style={styles.searchInput}
-              placeholder="Buscar doença ou ponto..."
-              placeholderTextColor="#666"
-              value={searchQuery}
-              onChangeText={setSearchQuery}
-            />
-            {(searchQuery || selectedLetter) && (
-              <TouchableOpacity onPress={clearFilters}>
-                <Ionicons name="close-circle" size={20} color="#666" />
-              </TouchableOpacity>
-            )}
-          </View>
+          <Ionicons name="search" size={20} color="#666" style={styles.searchIcon} />
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Buscar patologia, ponto..."
+            placeholderTextColor="#999"
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+          />
+          {searchQuery.length > 0 && (
+            <TouchableOpacity onPress={() => setSearchQuery('')}>
+              <Ionicons name="close-circle" size={20} color="#666" />
+            </TouchableOpacity>
+          )}
         </View>
+      </LinearGradient>
 
-        {/* Alphabet Filter */}
-        <View style={styles.alphabetContainer}>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.alphabetScroll}
+      {/* Category Tabs */}
+      <View style={styles.categoryContainer}>
+        {CATEGORIES.map((cat) => (
+          <TouchableOpacity
+            key={cat}
+            style={[
+              styles.categoryTab,
+              selectedCategory === cat && styles.categoryTabSelected
+            ]}
+            onPress={() => {
+              setSelectedCategory(cat);
+              setSelectedLetter(null); // Reset letter filter when changing category
+            }}
           >
+            <Text
+              style={[
+                styles.categoryText,
+                selectedCategory === cat && styles.categoryTextSelected
+              ]}
+            >
+              {cat}s
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+
+      {!searchQuery && (
+        <View style={styles.alphabetContainer}>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.alphabetScroll}>
             <TouchableOpacity
               style={[
                 styles.letterButton,
-                !selectedLetter && styles.letterButtonActive,
+                { width: 'auto', paddingHorizontal: 12 },
+                !selectedLetter && styles.letterButtonSelected,
               ]}
               onPress={() => setSelectedLetter(null)}
             >
               <Text
                 style={[
                   styles.letterText,
-                  !selectedLetter && styles.letterTextActive,
+                  selectedLetter === null && styles.letterTextSelected,
                 ]}
               >
                 Todos
               </Text>
             </TouchableOpacity>
             {ALPHABET.map((letter) => {
-              const hasEntries = acupatologiaData.some(
-                (item) => item.letter === letter
+              const hasEntries = acupunctureData.some(
+                (item) => item.category === selectedCategory && item.name.startsWith(letter)
               );
               return (
                 <TouchableOpacity
                   key={letter}
                   style={[
                     styles.letterButton,
-                    selectedLetter === letter && styles.letterButtonActive,
+                    selectedLetter === letter && styles.letterButtonSelected,
                     !hasEntries && styles.letterButtonDisabled,
                   ]}
                   onPress={() => hasEntries && setSelectedLetter(letter)}
@@ -245,7 +270,7 @@ export default function HomeScreen() {
                   <Text
                     style={[
                       styles.letterText,
-                      selectedLetter === letter && styles.letterTextActive,
+                      selectedLetter === letter && styles.letterTextSelected,
                       !hasEntries && styles.letterTextDisabled,
                     ]}
                   >
@@ -256,206 +281,207 @@ export default function HomeScreen() {
             })}
           </ScrollView>
         </View>
+      )}
 
-        {/* Results Count */}
-        <View style={styles.resultsInfo}>
-          <Text style={styles.resultsText}>
-            {filteredData.length} resultado{filteredData.length !== 1 ? 's' : ''}
-            {selectedLetter && ` para "${selectedLetter}"`}
-            {searchQuery && ` contendo "${searchQuery}"`}
-          </Text>
-        </View>
-
-        {/* Results List */}
-        <FlatList
-          data={filteredData}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id.toString()}
-          contentContainerStyle={styles.listContainer}
-          showsVerticalScrollIndicator={false}
-          ListEmptyComponent={
-            <View style={styles.emptyContainer}>
-              <Ionicons name="search-outline" size={64} color="#444" />
-              <Text style={styles.emptyText}>Nenhum resultado encontrado</Text>
+      <FlatList
+        data={filteredData}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id}
+        contentContainerStyle={styles.listContent}
+        initialNumToRender={20}
+        maxToRenderPerBatch={20}
+        windowSize={10}
+        ListEmptyComponent={
+          <View style={styles.emptyContainer}>
+            <Ionicons name="documents-outline" size={48} color="#ccc" />
+            <Text style={styles.emptyText}>Nenhum item encontrado</Text>
+            {(searchQuery || selectedLetter) && (
               <TouchableOpacity style={styles.clearButton} onPress={clearFilters}>
                 <Text style={styles.clearButtonText}>Limpar filtros</Text>
               </TouchableOpacity>
-            </View>
-          }
-        />
-
-        {/* Detail Modal */}
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => setModalVisible(false)}
-        >
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalContent}>
-              <LinearGradient
-                colors={['#2d1b4e', '#1a1a2e']}
-                style={styles.modalGradient}
-              >
-                <View style={styles.modalHeader}>
-                  <View style={styles.modalLetterBadge}>
-                    <Text style={styles.modalLetterText}>
-                      {selectedEntry?.letter}
-                    </Text>
-                  </View>
-                  <TouchableOpacity
-                    style={styles.closeButton}
-                    onPress={() => setModalVisible(false)}
-                  >
-                    <Ionicons name="close" size={24} color="#fff" />
-                  </TouchableOpacity>
-                </View>
-
-                <ScrollView
-                  style={styles.modalScroll}
-                  showsVerticalScrollIndicator={false}
-                >
-                  <Text style={styles.modalTitle}>{selectedEntry?.disease}</Text>
-
-                  <View style={styles.divider} />
-
-                  {/* Quick Access to Images */}
-                  {selectedEntry && getQuickAccessPoints(selectedEntry.points).size > 0 && (
-                    <View style={styles.quickAccessSection}>
-                      <Text style={styles.quickAccessTitle}>
-                        <Ionicons name="images-outline" size={14} color="#10b981" /> Ver na Imagem Anatômica
-                      </Text>
-                      <View style={styles.quickAccessGrid}>
-                        {Array.from(getQuickAccessPoints(selectedEntry.points)).map(([region, points]) => (
-                          <TouchableOpacity
-                            key={region}
-                            style={styles.quickAccessCard}
-                            onPress={() => openAnatomyImage(points[0], region)}
-                          >
-                            <Image
-                              source={ANATOMY_IMAGES[region]}
-                              style={styles.quickAccessImage}
-                              contentFit="cover"
-                            />
-                            <View style={styles.quickAccessInfo}>
-                              <Text style={styles.quickAccessRegion}>{REGION_NAMES[region]}</Text>
-                              <Text style={styles.quickAccessPoints} numberOfLines={1}>
-                                {points.slice(0, 4).join(', ')}{points.length > 4 ? '...' : ''}
-                              </Text>
-                            </View>
-                          </TouchableOpacity>
-                        ))}
-                      </View>
-                    </View>
-                  )}
-
-                  <View style={styles.divider} />
-
-                  <Text style={styles.pointsLabel}>
-                    <Ionicons name="locate" size={16} color="#8B5CF6" /> Pontos de Acupuntura
-                  </Text>
-                  <Text style={styles.pointsHint}>
-                    Toque nos pontos destacados para ver na imagem
-                  </Text>
-                  {selectedEntry && renderPointsWithLinks(selectedEntry.points)}
-                </ScrollView>
-              </LinearGradient>
-            </View>
+            )}
           </View>
-        </Modal>
+        }
+      />
 
-        {/* Anatomy Image Modal */}
-        <Modal
-          animationType="fade"
-          transparent={true}
-          visible={anatomyModalVisible}
-          onRequestClose={() => setAnatomyModalVisible(false)}
-        >
-          <View style={styles.anatomyModalOverlay}>
-            <View style={styles.anatomyModalContent}>
-              <LinearGradient
-                colors={['#2d1b4e', '#1a1a2e']}
-                style={styles.anatomyModalGradient}
+      {/* Detail Modal */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <LinearGradient
+              colors={['#2d1b4e', '#1a1a2e']}
+              style={styles.modalGradient}
+            >
+              <View style={styles.modalHeader}>
+                <View style={styles.modalLetterBadge}>
+                  <Text style={styles.modalLetterText}>
+                    {selectedEntry?.name.charAt(0).toUpperCase()}
+                  </Text>
+                </View>
+                <TouchableOpacity
+                  style={styles.closeButton}
+                  onPress={() => setModalVisible(false)}
+                >
+                  <Ionicons name="close" size={24} color="#fff" />
+                </TouchableOpacity>
+              </View>
+
+              <ScrollView
+                style={styles.modalScroll}
+                showsVerticalScrollIndicator={false}
               >
-                <View style={styles.anatomyModalHeader}>
-                  <View>
-                    <Text style={styles.anatomyModalTitle}>
-                      {selectedRegion ? REGION_NAMES[selectedRegion] : ''}
-                    </Text>
-                    <Text style={styles.anatomyModalSubtitle}>
-                      Ponto: {selectedPointName}
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
+                  <Text style={[styles.modalTitle, { marginBottom: 0, flex: 1 }]}>{selectedEntry?.name}</Text>
+                  <View style={styles.modalCategoryBadge}>
+                    <Text style={{ color: '#4c669f', fontWeight: 'bold', fontSize: 12 }}>
+                      {selectedEntry?.category}
                     </Text>
                   </View>
-                  <TouchableOpacity
-                    style={styles.closeButton}
-                    onPress={() => setAnatomyModalVisible(false)}
-                  >
-                    <Ionicons name="close" size={24} color="#fff" />
-                  </TouchableOpacity>
                 </View>
 
-                <View style={styles.imageContainer}>
+                <View style={styles.divider} />
+
+                {/* Quick Access to Images */}
+                {selectedEntry && getQuickAccessPoints(selectedEntry.points).size > 0 && (
+                  <View style={styles.quickAccessSection}>
+                    <Text style={styles.quickAccessTitle}>
+                      <Ionicons name="images-outline" size={14} color="#10b981" /> Ver na Imagem Anatômica
+                    </Text>
+                    <View style={styles.quickAccessGrid}>
+                      {Array.from(getQuickAccessPoints(selectedEntry.points)).map(([region, points]) => (
+                        <TouchableOpacity
+                          key={region}
+                          style={styles.quickAccessCard}
+                          onPress={() => openAnatomyImage(points[0], region)}
+                        >
+                          <Image
+                            source={ANATOMY_IMAGES[region]}
+                            style={styles.quickAccessImage}
+                            contentFit="cover"
+                          />
+                          <View style={styles.quickAccessInfo}>
+                            <Text style={styles.quickAccessRegion}>{REGION_NAMES[region]}</Text>
+                            <Text style={styles.quickAccessPoints} numberOfLines={1}>
+                              {points.slice(0, 4).join(', ')}{points.length > 4 ? '...' : ''}
+                            </Text>
+                          </View>
+                        </TouchableOpacity>
+                      ))}
+                    </View>
+                  </View>
+                )}
+
+                <View style={styles.divider} />
+
+                <Text style={styles.pointsLabel}>
+                  <Ionicons name="locate" size={16} color="#8B5CF6" /> Pontos de Acupuntura
+                </Text>
+                <Text style={styles.pointsHint}>
+                  Toque nos pontos destacados para ver na imagem
+                </Text>
+                {selectedEntry && renderPointsWithLinks(selectedEntry.points)}
+              </ScrollView>
+            </LinearGradient>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Anatomy Image Modal */}
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={anatomyModalVisible}
+        onRequestClose={() => setAnatomyModalVisible(false)}
+      >
+        <View style={styles.anatomyModalOverlay}>
+          <View style={styles.anatomyModalContent}>
+            <LinearGradient
+              colors={['#2d1b4e', '#1a1a2e']}
+              style={styles.anatomyModalGradient}
+            >
+              <View style={styles.anatomyModalHeader}>
+                <View>
+                  <Text style={styles.anatomyModalTitle}>
+                    {selectedRegion ? REGION_NAMES[selectedRegion] : ''}
+                  </Text>
+                  <Text style={styles.anatomyModalSubtitle}>
+                    Ponto: {selectedPointName}
+                  </Text>
+                </View>
+                <TouchableOpacity
+                  style={styles.closeButton}
+                  onPress={() => setAnatomyModalVisible(false)}
+                >
+                  <Ionicons name="close" size={24} color="#fff" />
+                </TouchableOpacity>
+              </View>
+
+              <View style={styles.imageContainer}>
+                <ScrollView
+                  maximumZoomScale={3}
+                  minimumZoomScale={1}
+                  centerContent={true}
+                  showsVerticalScrollIndicator={false}
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
+                >
                   <ScrollView
+                    horizontal={true}
                     maximumZoomScale={3}
                     minimumZoomScale={1}
                     centerContent={true}
-                    showsVerticalScrollIndicator={false}
                     showsHorizontalScrollIndicator={false}
+                    showsVerticalScrollIndicator={false}
                     contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
                   >
-                    <ScrollView
-                      horizontal={true}
-                      maximumZoomScale={3}
-                      minimumZoomScale={1}
-                      centerContent={true}
-                      showsHorizontalScrollIndicator={false}
-                      showsVerticalScrollIndicator={false}
-                      contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
-                    >
-                      {selectedRegion && (
-                        <Image
-                          source={ANATOMY_IMAGES[selectedRegion]}
-                          style={[
-                            styles.anatomyImage,
-                            {
-                              width: SCREEN_WIDTH * zoomScale,
-                              height: SCREEN_WIDTH * zoomScale
-                            }
-                          ]}
-                          contentFit="contain"
-                        />
-                      )}
-                    </ScrollView>
+                    {selectedRegion && (
+                      <Image
+                        source={ANATOMY_IMAGES[selectedRegion]}
+                        style={[
+                          styles.anatomyImage,
+                          {
+                            width: SCREEN_WIDTH * zoomScale,
+                            height: SCREEN_WIDTH * zoomScale
+                          }
+                        ]}
+                        contentFit="contain"
+                      />
+                    )}
                   </ScrollView>
+                </ScrollView>
 
-                  {/* Zoom Controls Overlay */}
-                  <View style={styles.zoomControls}>
-                    <TouchableOpacity
-                      style={styles.zoomButton}
-                      onPress={() => setZoomScale(Math.min(zoomScale + 0.5, 3))}
-                    >
-                      <Ionicons name="add" size={24} color="#fff" />
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      style={styles.zoomButton}
-                      onPress={() => setZoomScale(Math.max(zoomScale - 0.5, 1))}
-                    >
-                      <Ionicons name="remove" size={24} color="#fff" />
-                    </TouchableOpacity>
-                  </View>
+                {/* Zoom Controls Overlay */}
+                <View style={styles.zoomControls}>
+                  <TouchableOpacity
+                    style={styles.zoomButton}
+                    onPress={() => setZoomScale(Math.min(zoomScale + 0.5, 3))}
+                  >
+                    <Ionicons name="add" size={24} color="#fff" />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.zoomButton}
+                    onPress={() => setZoomScale(Math.max(zoomScale - 0.5, 1))}
+                  >
+                    <Ionicons name="remove" size={24} color="#fff" />
+                  </TouchableOpacity>
                 </View>
+              </View>
 
-                <View style={styles.anatomyModalFooter}>
-                  <Ionicons name="search" size={16} color="#8B5CF6" />
-                  <Text style={styles.anatomyModalHint}>
-                    Use os botões para zoom
-                  </Text>
-                </View>
-              </LinearGradient>
-            </View>
+              <View style={styles.anatomyModalFooter}>
+                <Ionicons name="search" size={16} color="#8B5CF6" />
+                <Text style={styles.anatomyModalHint}>
+                  Use os botões para zoom
+                </Text>
+              </View>
+            </LinearGradient>
           </View>
-        </Modal>
-      </LinearGradient>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -464,191 +490,188 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  gradient: {
-    flex: 1,
-    paddingTop: 60,
-  },
   header: {
-    paddingHorizontal: 20,
-    marginBottom: 20,
+    paddingTop: 60,
+    paddingBottom: 20,
   },
   title: {
-    fontSize: 32,
+    fontSize: 28,
     fontWeight: 'bold',
     color: '#fff',
-    letterSpacing: 1,
+    marginLeft: 20,
+    marginBottom: 4,
   },
   subtitle: {
     fontSize: 14,
-    color: '#8B5CF6',
-    marginTop: 4,
+    color: 'rgba(255, 255, 255, 0.8)',
+    marginLeft: 20,
+    marginBottom: 20,
   },
   searchContainer: {
     paddingHorizontal: 20,
-    marginBottom: 16,
   },
-  searchBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.08)',
-    borderRadius: 16,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    borderWidth: 1,
-    borderColor: 'rgba(139, 92, 246, 0.3)',
+  searchIcon: {
+    position: 'absolute',
+    left: 36,
+    top: 14,
+    zIndex: 1,
   },
   searchInput: {
-    flex: 1,
-    marginLeft: 12,
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    borderRadius: 25,
+    paddingVertical: 12,
+    paddingLeft: 44,
+    paddingRight: 40,
     fontSize: 16,
+    color: '#333',
+  },
+  categoryContainer: {
+    flexDirection: 'row',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    backgroundColor: '#1a1a2e',
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  categoryTab: {
+    flex: 1,
+    paddingVertical: 8,
+    alignItems: 'center',
+    borderRadius: 20,
+    marginHorizontal: 4,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  categoryTabSelected: {
+    backgroundColor: '#8B5CF6',
+  },
+  categoryText: {
+    fontSize: 14,
+    color: '#ccc',
+    fontWeight: '600',
+  },
+  categoryTextSelected: {
     color: '#fff',
   },
   alphabetContainer: {
-    marginBottom: 12,
+    backgroundColor: '#1a1a2e',
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255, 255, 255, 0.1)',
   },
   alphabetScroll: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
     gap: 8,
   },
   letterButton: {
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  letterButtonActive: {
+  letterButtonSelected: {
     backgroundColor: '#8B5CF6',
-    borderColor: '#8B5CF6',
   },
   letterButtonDisabled: {
     opacity: 0.3,
   },
   letterText: {
     fontSize: 14,
+    color: '#ccc',
     fontWeight: '600',
-    color: '#888',
   },
-  letterTextActive: {
+  letterTextSelected: {
     color: '#fff',
   },
   letterTextDisabled: {
-    color: '#444',
+    color: '#999',
   },
-  resultsInfo: {
-    paddingHorizontal: 20,
-    marginBottom: 12,
+  listContent: {
+    padding: 16,
+    paddingBottom: 80,
   },
-  resultsText: {
-    fontSize: 13,
-    color: '#666',
-  },
-  listContainer: {
-    paddingHorizontal: 20,
-    paddingBottom: 100,
-  },
-  card: {
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
-    borderRadius: 16,
+  itemContainer: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
     padding: 16,
     marginBottom: 12,
-    borderWidth: 1,
-    borderColor: 'rgba(139, 92, 246, 0.2)',
-  },
-  cardHeader: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
-    marginBottom: 8,
-  },
-  letterBadge: {
-    width: 32,
-    height: 32,
-    borderRadius: 10,
-    backgroundColor: '#8B5CF6',
-    justifyContent: 'center',
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  itemContent: {
+    flex: 1,
     marginRight: 12,
   },
-  letterBadgeText: {
+  itemTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#333',
+    marginBottom: 4,
   },
-  cardTitle: {
-    flex: 1,
-    fontSize: 17,
-    fontWeight: '600',
-    color: '#fff',
-    lineHeight: 22,
-  },
-  cardPoints: {
+  itemDescription: {
     fontSize: 14,
-    color: '#aaa',
+    color: '#666',
     lineHeight: 20,
-    marginLeft: 44,
-  },
-  cardFooter: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    marginTop: 12,
-  },
-  tapHint: {
-    fontSize: 12,
-    color: '#8B5CF6',
-    marginRight: 4,
   },
   emptyContainer: {
     alignItems: 'center',
-    paddingTop: 60,
+    justifyContent: 'center',
+    paddingVertical: 60,
   },
   emptyText: {
-    fontSize: 16,
-    color: '#666',
     marginTop: 16,
+    fontSize: 16,
+    color: '#999',
+    marginBottom: 20,
   },
   clearButton: {
-    marginTop: 20,
-    paddingHorizontal: 24,
-    paddingVertical: 12,
     backgroundColor: '#8B5CF6',
-    borderRadius: 25,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 20,
   },
   clearButtonText: {
     color: '#fff',
     fontWeight: '600',
   },
+
+  // Modal Styles
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'flex-end',
   },
   modalContent: {
-    maxHeight: '90%',
+    height: '92%',
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
     overflow: 'hidden',
   },
   modalGradient: {
-    flex: 1, // Ensure gradient fills the modalContent container
-    padding: 24,
-    paddingBottom: 40,
+    flex: 1,
   },
   modalHeader: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 20,
-    flexShrink: 0, // Ensure header doesn't shrink
+    justifyContent: 'space-between',
+    padding: 20,
+    paddingTop: 24,
   },
   modalLetterBadge: {
     width: 48,
     height: 48,
-    borderRadius: 16,
-    backgroundColor: '#8B5CF6',
-    justifyContent: 'center',
+    borderRadius: 24,
+    backgroundColor: 'rgba(139, 92, 246, 0.2)',
     alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(139, 92, 246, 0.5)',
   },
   modalLetterText: {
     fontSize: 24,
@@ -660,161 +683,180 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 20,
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    justifyContent: 'center',
     alignItems: 'center',
+    justifyContent: 'center',
   },
   modalScroll: {
-    flex: 1, // Use flex to take remaining space allowing scroll
+    flex: 1,
+    paddingHorizontal: 24,
+  },
+  modalCategoryBadge: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#8B5CF6',
+    backgroundColor: 'rgba(139, 92, 246, 0.15)',
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+    borderRadius: 16,
   },
   modalTitle: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 'bold',
     color: '#fff',
-    marginBottom: 16,
-    lineHeight: 32,
+    marginBottom: 24,
+    lineHeight: 36,
   },
   divider: {
     height: 1,
-    backgroundColor: 'rgba(139, 92, 246, 0.3)',
-    marginVertical: 16,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    marginVertical: 24,
   },
-  quickAccessSection: {
-    marginBottom: 8,
-  },
-  quickAccessTitle: {
-    fontSize: 13,
+  pointsLabel: {
+    fontSize: 18,
     fontWeight: '600',
-    color: '#10b981',
-    marginBottom: 12,
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-  },
-  quickAccessGrid: {
-    gap: 10,
-  },
-  quickAccessCard: {
+    color: '#fff',
+    marginBottom: 8,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(16, 185, 129, 0.1)',
-    borderRadius: 12,
-    padding: 10,
+  },
+  pointsHint: {
+    fontSize: 14,
+    color: '#9ca3af',
+    marginBottom: 16,
+    fontStyle: 'italic',
+  },
+  modalPoints: {
+    fontSize: 18,
+    color: '#e2e8f0',
+    lineHeight: 32,
+    fontWeight: '400',
+  },
+  linkablePoint: {
+    color: '#a78bfa',
+    fontWeight: 'bold',
+    textDecorationLine: 'underline',
+  },
+  quickAccessSection: {
+    marginBottom: 26,
+  },
+  quickAccessTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#fff',
+    marginBottom: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  quickAccessGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+  },
+  quickAccessCard: {
+    width: (SCREEN_WIDTH - 48 - 12) / 2,
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    borderRadius: 16,
+    padding: 4,
     borderWidth: 1,
-    borderColor: 'rgba(16, 185, 129, 0.3)',
+    borderColor: 'rgba(255, 255, 255, 0.1)',
   },
   quickAccessImage: {
-    width: 50,
-    height: 50,
-    borderRadius: 8,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    width: '100%',
+    height: 100,
+    borderRadius: 12,
+    backgroundColor: 'rgba(0,0,0,0.2)',
   },
   quickAccessInfo: {
-    flex: 1,
-    marginLeft: 12,
+    padding: 10,
   },
   quickAccessRegion: {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: '600',
     color: '#fff',
     marginBottom: 2,
   },
   quickAccessPoints: {
-    fontSize: 12,
-    color: '#10b981',
-  },
-  pointsLabel: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#8B5CF6',
-    marginBottom: 4,
-    textTransform: 'uppercase',
-    letterSpacing: 1,
-  },
-  pointsHint: {
     fontSize: 11,
-    color: '#666',
-    marginBottom: 12,
-    fontStyle: 'italic',
+    color: '#9ca3af',
   },
-  modalPoints: {
-    fontSize: 16,
-    color: '#ddd',
-    lineHeight: 26,
-  },
-  linkablePoint: {
-    color: '#10b981',
-    fontWeight: '600',
-    textDecorationLine: 'underline',
-  },
+
   // Anatomy Modal Styles
   anatomyModalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.9)',
-    justifyContent: 'center',
+    backgroundColor: '#000',
   },
   anatomyModalContent: {
     flex: 1,
-    margin: 16,
-    borderRadius: 24,
-    overflow: 'hidden',
   },
   anatomyModalGradient: {
     flex: 1,
-    padding: 20,
   },
   anatomyModalHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    marginBottom: 16,
+    padding: 20,
+    paddingTop: 60,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 10,
   },
   anatomyModalTitle: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#fff',
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: { width: -1, height: 1 },
+    textShadowRadius: 10,
   },
   anatomyModalSubtitle: {
-    fontSize: 14,
-    color: '#10b981',
+    fontSize: 16,
+    color: '#a78bfa',
+    fontWeight: '600',
     marginTop: 4,
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: { width: -1, height: 1 },
+    textShadowRadius: 10,
   },
-
   imageContainer: {
-    height: SCREEN_WIDTH, // Square container
-    width: '100%',
-    backgroundColor: 'rgba(0,0,0,0.3)',
-    borderRadius: 16,
-    overflow: 'hidden',
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   anatomyImage: {
-    width: SCREEN_WIDTH,
-    height: SCREEN_WIDTH,
-  },
-  anatomyModalFooter: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 16,
-    gap: 6,
-  },
-  anatomyModalHint: {
-    fontSize: 12,
-    color: '#888',
+    // Width/Height are dynamic
   },
   zoomControls: {
     position: 'absolute',
-    bottom: 16,
-    right: 16,
-    flexDirection: 'column',
+    bottom: 100,
+    right: 20,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    borderRadius: 24,
+    padding: 4,
     gap: 8,
   },
   zoomButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(139, 92, 246, 0.8)',
-    justifyContent: 'center',
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: 'rgba(255,255,255,0.1)',
     alignItems: 'center',
+    justifyContent: 'center',
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.3)',
+    borderColor: 'rgba(255,255,255,0.2)',
+  },
+  anatomyModalFooter: {
+    padding: 20,
+    paddingBottom: 40,
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 8,
+  },
+  anatomyModalHint: {
+    color: '#9ca3af',
+    fontSize: 14,
   },
 });
