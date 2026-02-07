@@ -1,27 +1,33 @@
+import { useTheme } from '@/context/ThemeContext';
 import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 import React from 'react';
+import { Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function TabLayout() {
   const insets = useSafeAreaInsets();
+  const { colors, fontSizeMultiplier } = useTheme();
+
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: '#8B5CF6',
-        tabBarInactiveTintColor: '#666',
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: colors.textSecondary,
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: '#0f0f23',
-          borderTopColor: 'rgba(139, 92, 246, 0.2)',
+          backgroundColor: colors.background === '#FFFFFF' ? '#F0F2F5' : '#0f0f23', // Match bottom gradient or specific color
+          borderTopColor: colors.border,
           borderTopWidth: 1,
           paddingTop: 8,
-          paddingBottom: Math.max(insets.bottom, 8),
-          height: 60 + Math.max(insets.bottom, 8),
+          // Use safer padding for web to avoid cut off
+          paddingBottom: Platform.OS === 'web' ? 20 : Math.max(insets.bottom, 8),
+          height: Platform.OS === 'web' ? 70 : 60 + Math.max(insets.bottom, 8) + (fontSizeMultiplier > 1 ? 10 : 0),
         },
         tabBarLabelStyle: {
-          fontSize: 11,
+          fontSize: 11 * fontSizeMultiplier,
           marginTop: 4,
+          fontWeight: '600',
         },
       }}>
       <Tabs.Screen
@@ -29,7 +35,7 @@ export default function TabLayout() {
         options={{
           title: 'Buscar',
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="search" size={size} color={color} />
+            <Ionicons name="search" size={size * fontSizeMultiplier} color={color} />
           ),
         }}
       />
@@ -38,7 +44,7 @@ export default function TabLayout() {
         options={{
           title: 'Referência',
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="body-outline" size={size} color={color} />
+            <Ionicons name="body-outline" size={size * fontSizeMultiplier} color={color} />
           ),
         }}
       />
@@ -47,7 +53,7 @@ export default function TabLayout() {
         options={{
           title: 'Sobre',
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="information-circle-outline" size={size} color={color} />
+            <Ionicons name="information-circle-outline" size={size * fontSizeMultiplier} color={color} />
           ),
         }}
       />

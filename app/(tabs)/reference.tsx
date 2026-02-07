@@ -1,4 +1,5 @@
 import { ZoomableImage } from '@/components/ZoomableImage';
+import { useTheme } from '@/context/ThemeContext';
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -56,6 +57,7 @@ const ANATOMY_REGIONS: AnatomyRegion[] = [
 ];
 
 export default function ReferenceScreen() {
+    const { theme, colors, fontSizeMultiplier } = useTheme();
     const [selectedRegion, setSelectedRegion] = useState<AnatomyRegion | null>(null);
     const [modalVisible, setModalVisible] = useState(false);
 
@@ -65,14 +67,14 @@ export default function ReferenceScreen() {
     };
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, { backgroundColor: colors.background }]}>
             <LinearGradient
-                colors={['#1a1a2e', '#16213e', '#0f0f23']}
+                colors={colors.backgroundGradient}
                 style={styles.gradient}
             >
                 <View style={styles.header}>
-                    <Text style={styles.title}>Referência Anatômica</Text>
-                    <Text style={styles.subtitle}>
+                    <Text style={[styles.title, { color: colors.text, fontSize: 28 * fontSizeMultiplier }]}>Referência Anatômica</Text>
+                    <Text style={[styles.subtitle, { color: colors.primary, fontSize: 14 * fontSizeMultiplier }]}>
                         Localize os pontos no corpo
                     </Text>
                 </View>
@@ -85,28 +87,28 @@ export default function ReferenceScreen() {
                     {ANATOMY_REGIONS.map((region) => (
                         <TouchableOpacity
                             key={region.id}
-                            style={styles.card}
+                            style={[styles.card, { backgroundColor: colors.surface, borderColor: colors.border }]}
                             onPress={() => openRegion(region)}
                             activeOpacity={0.7}
                         >
                             <Image
                                 source={region.image}
-                                style={styles.cardImage}
+                                style={[styles.cardImage, { backgroundColor: theme === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0,0,0,0.05)' }]}
                                 contentFit="cover"
                             />
                             <View style={styles.cardContent}>
-                                <Text style={styles.cardTitle}>{region.title}</Text>
-                                <Text style={styles.cardPoints} numberOfLines={1}>
+                                <Text style={[styles.cardTitle, { color: colors.text, fontSize: 17 * fontSizeMultiplier }]}>{region.title}</Text>
+                                <Text style={[styles.cardPoints, { color: colors.textSecondary, fontSize: 13 * fontSizeMultiplier }]} numberOfLines={1}>
                                     {region.points.join(' • ')}
                                 </Text>
                             </View>
-                            <Ionicons name="expand-outline" size={20} color="#8B5CF6" />
+                            <Ionicons name="expand-outline" size={20 * fontSizeMultiplier} color={colors.primary} />
                         </TouchableOpacity>
                     ))}
 
-                    <View style={styles.infoBox}>
-                        <Ionicons name="information-circle" size={20} color="#8B5CF6" />
-                        <Text style={styles.infoText}>
+                    <View style={[styles.infoBox, { backgroundColor: colors.primaryLight + '1a', borderColor: colors.primaryLight + '4d' }]}>
+                        <Ionicons name="information-circle" size={20 * fontSizeMultiplier} color={colors.primary} />
+                        <Text style={[styles.infoText, { color: colors.textSecondary, fontSize: 13 * fontSizeMultiplier, lineHeight: 18 * fontSizeMultiplier }]}>
                             Toque em uma região para ver a imagem ampliada com os pontos de acupuntura.
                         </Text>
                     </View>
@@ -123,16 +125,16 @@ export default function ReferenceScreen() {
                         <View style={styles.modalContent}>
                             <GestureHandlerRootView style={{ flex: 1 }}>
                                 <LinearGradient
-                                    colors={['#2d1b4e', '#1a1a2e']}
+                                    colors={theme === 'dark' ? ['#2d1b4e', '#1a1a2e'] : ['#FFFFFF', '#F6F8FA']}
                                     style={styles.modalGradient}
                                 >
                                     <View style={styles.modalHeader}>
-                                        <Text style={styles.modalTitle}>{selectedRegion?.title}</Text>
+                                        <Text style={[styles.modalTitle, { color: colors.text, fontSize: 22 * fontSizeMultiplier }]}>{selectedRegion?.title}</Text>
                                         <TouchableOpacity
-                                            style={styles.closeButton}
+                                            style={[styles.closeButton, { backgroundColor: theme === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0,0,0,0.05)' }]}
                                             onPress={() => setModalVisible(false)}
                                         >
-                                            <Ionicons name="close" size={24} color="#fff" />
+                                            <Ionicons name="close" size={24} color={colors.text} />
                                         </TouchableOpacity>
                                     </View>
 
@@ -141,7 +143,7 @@ export default function ReferenceScreen() {
                                         showsVerticalScrollIndicator={false}
                                         contentContainerStyle={{ paddingBottom: 40 }}
                                     >
-                                        <View style={styles.imageContainer}>
+                                        <View style={[styles.imageContainer, { backgroundColor: theme === 'dark' ? 'rgba(0,0,0,0.3)' : 'rgba(0,0,0,0.05)' }]}>
                                             {selectedRegion && (
                                                 <ZoomableImage
                                                     source={selectedRegion.image}
@@ -153,18 +155,18 @@ export default function ReferenceScreen() {
 
                                         <View style={styles.modalFooter}>
                                             <View style={styles.zoomHintContainer}>
-                                                <Ionicons name="hand-left" size={14} color="#8B5CF6" />
-                                                <Text style={styles.zoomHintText}>Pinça para zoom • Arraste para mover (V2)</Text>
+                                                <Ionicons name="hand-left" size={14 * fontSizeMultiplier} color={colors.primary} />
+                                                <Text style={[styles.zoomHintText, { color: colors.textSecondary, fontSize: 12 * fontSizeMultiplier }]}>Pinça para zoom • Arraste para mover (V2)</Text>
                                             </View>
-                                            <Text style={styles.modalDescription}>
+                                            <Text style={[styles.modalDescription, { color: colors.textSecondary, fontSize: 14 * fontSizeMultiplier, lineHeight: 20 * fontSizeMultiplier }]}>
                                                 {selectedRegion?.description}
                                             </Text>
                                             <View style={styles.pointsContainer}>
-                                                <Text style={styles.pointsTitle}>Pontos principais:</Text>
+                                                <Text style={[styles.pointsTitle, { color: colors.primary, fontSize: 12 * fontSizeMultiplier }]}>Pontos principais:</Text>
                                                 <View style={styles.pointsRow}>
                                                     {selectedRegion?.points.map((point) => (
-                                                        <View key={point} style={styles.pointBadge}>
-                                                            <Text style={styles.pointText}>{point}</Text>
+                                                        <View key={point} style={[styles.pointBadge, { backgroundColor: colors.primaryLight + '33', borderColor: colors.primaryLight + '66' }]}>
+                                                            <Text style={[styles.pointText, { color: colors.primary, fontSize: 12 * fontSizeMultiplier }]}>{point}</Text>
                                                         </View>
                                                     ))}
                                                 </View>

@@ -1,4 +1,6 @@
+import { SettingsModal } from '@/components/SettingsModal';
 import { ZoomableImage } from '@/components/ZoomableImage';
+import { useTheme } from '@/context/ThemeContext';
 import {
   acupunctureData,
   AcupunctureException,
@@ -41,12 +43,15 @@ const ANATOMY_IMAGES: Record<AnatomyRegionId, any> = {
 
 const CATEGORIES: CategoryType[] = ['Patologia', 'Síndrome', 'Ponto'];
 
+
 export default function HomeScreen() {
+  const { theme, colors, fontSizeMultiplier } = useTheme();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<CategoryType>('Patologia');
   const [selectedLetter, setSelectedLetter] = useState<string | null>(null);
   const [selectedEntry, setSelectedEntry] = useState<AcupunctureException | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const [settingsVisible, setSettingsVisible] = useState(false);
 
   // State for anatomy image modal
   const [anatomyModalVisible, setAnatomyModalVisible] = useState(false);
@@ -164,36 +169,51 @@ export default function HomeScreen() {
 
   const renderItem = ({ item }: { item: AcupunctureException }) => (
     <TouchableOpacity
-      style={styles.itemContainer}
+      style={[styles.itemContainer, {
+        backgroundColor: colors.surface,
+        borderColor: colors.border
+      }]}
       onPress={() => handleEntryPress(item)}
     >
       <View style={styles.itemContent}>
         <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
-          <Text style={styles.itemTitle}>{item.name}</Text>
+          <Text style={[styles.itemTitle, { color: colors.text, fontSize: 18 * fontSizeMultiplier }]}>{item.name}</Text>
         </View>
-        <Text style={styles.itemDescription} numberOfLines={2}>
+        <Text style={[styles.itemDescription, { color: colors.textSecondary, fontSize: 14 * fontSizeMultiplier }]} numberOfLines={2}>
           {item.points}
         </Text>
       </View>
-      <Ionicons name="chevron-forward" size={20} color="#666" />
+      <Ionicons name="chevron-forward" size={20 * fontSizeMultiplier} color={colors.icon} />
     </TouchableOpacity>
   );
 
   return (
-    <View style={styles.container}>
-      <StatusBar barStyle="light-content" />
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <StatusBar barStyle={theme === 'dark' ? "light-content" : "dark-content"} />
       <LinearGradient
-        colors={['#2d1b4e', '#1b1b2f', '#0f0f23']}
+        colors={colors.backgroundGradient}
         style={{ flex: 1 }}
       >
         <View style={styles.header}>
-          <Text style={styles.title}>Acupatologia</Text>
-          <Text style={styles.subtitle}>Guia de Acupuntura</Text>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingRight: 20 }}>
+            <View>
+              <Text style={[styles.title, { color: colors.text }]}>Acupatologia</Text>
+              <Text style={[styles.subtitle, { color: colors.textSecondary }]}>Guia de Acupuntura</Text>
+            </View>
+            <TouchableOpacity onPress={() => setSettingsVisible(true)} style={{ padding: 8 }}>
+              <Ionicons name="settings-outline" size={24} color={colors.text} />
+            </TouchableOpacity>
+          </View>
 
           <View style={styles.searchContainer}>
-            <Ionicons name="search" size={20} color="#666" style={styles.searchIcon} />
+            <Ionicons name="search" size={20} color={colors.icon} style={styles.searchIcon} />
             <TextInput
-              style={styles.searchInput}
+              style={[styles.searchInput, {
+                backgroundColor: theme === 'dark' ? 'rgba(255, 255, 255, 0.9)' : '#fff',
+                color: '#333', // Always dark text in search input as background is light
+                borderColor: colors.border,
+                borderWidth: 1
+              }]}
               placeholder="Buscar patologia, ponto..."
               placeholderTextColor="#999"
               value={searchQuery}
@@ -201,20 +221,21 @@ export default function HomeScreen() {
             />
             {searchQuery.length > 0 && (
               <TouchableOpacity onPress={() => setSearchQuery('')}>
-                <Ionicons name="close-circle" size={20} color="#666" />
+                <Ionicons name="close-circle" size={20} color={colors.icon} />
               </TouchableOpacity>
             )}
           </View>
         </View>
 
         {/* Category Tabs */}
-        <View style={styles.categoryContainer}>
+        <View style={[styles.categoryContainer, { backgroundColor: theme === 'dark' ? 'rgba(0, 0, 0, 0.2)' : 'rgba(0,0,0,0.05)', borderBottomColor: colors.border }]}>
           {CATEGORIES.map((cat) => (
             <TouchableOpacity
               key={cat}
               style={[
                 styles.categoryTab,
-                selectedCategory === cat && styles.categoryTabSelected
+                { backgroundColor: theme === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0,0,0,0.05)' },
+                selectedCategory === cat && { backgroundColor: colors.primary }
               ]}
               onPress={() => {
                 setSelectedCategory(cat);
@@ -224,7 +245,8 @@ export default function HomeScreen() {
               <Text
                 style={[
                   styles.categoryText,
-                  selectedCategory === cat && styles.categoryTextSelected
+                  { color: colors.textSecondary },
+                  selectedCategory === cat && { color: '#fff' }
                 ]}
               >
                 {cat}s
@@ -234,20 +256,22 @@ export default function HomeScreen() {
         </View>
 
         {!searchQuery && (
-          <View style={styles.alphabetContainer}>
+          <View style={[styles.alphabetContainer, { backgroundColor: theme === 'dark' ? 'rgba(0, 0, 0, 0.2)' : 'rgba(0,0,0,0.05)', borderBottomColor: colors.border }]}>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.alphabetScroll}>
               <TouchableOpacity
                 style={[
                   styles.letterButton,
                   { width: 'auto', paddingHorizontal: 12 },
-                  !selectedLetter && styles.letterButtonSelected,
+                  { backgroundColor: theme === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0,0,0,0.05)' },
+                  !selectedLetter && { backgroundColor: colors.primary },
                 ]}
                 onPress={() => setSelectedLetter(null)}
               >
                 <Text
                   style={[
                     styles.letterText,
-                    selectedLetter === null && styles.letterTextSelected,
+                    { color: colors.textSecondary },
+                    selectedLetter === null && { color: '#fff' },
                   ]}
                 >
                   Todos
@@ -262,7 +286,8 @@ export default function HomeScreen() {
                     key={letter}
                     style={[
                       styles.letterButton,
-                      selectedLetter === letter && styles.letterButtonSelected,
+                      { backgroundColor: theme === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0,0,0,0.05)' },
+                      selectedLetter === letter && { backgroundColor: colors.primary },
                       !hasEntries && styles.letterButtonDisabled,
                     ]}
                     onPress={() => hasEntries && setSelectedLetter(letter)}
@@ -271,8 +296,9 @@ export default function HomeScreen() {
                     <Text
                       style={[
                         styles.letterText,
-                        selectedLetter === letter && styles.letterTextSelected,
-                        !hasEntries && styles.letterTextDisabled,
+                        { color: colors.textSecondary },
+                        selectedLetter === letter && { color: '#fff' },
+                        !hasEntries && { color: colors.border },
                       ]}
                     >
                       {letter}
@@ -306,7 +332,6 @@ export default function HomeScreen() {
         />
       </LinearGradient>
 
-      {/* Detail Modal */}
       <Modal
         animationType="slide"
         transparent={true}
@@ -316,20 +341,20 @@ export default function HomeScreen() {
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <LinearGradient
-              colors={['#2d1b4e', '#1a1a2e']}
+              colors={theme === 'dark' ? ['#2d1b4e', '#1a1a2e'] : ['#FFFFFF', '#F6F8FA']}
               style={styles.modalGradient}
             >
               <View style={styles.modalHeader}>
-                <View style={styles.modalLetterBadge}>
-                  <Text style={styles.modalLetterText}>
+                <View style={[styles.modalLetterBadge, { borderColor: colors.primary, backgroundColor: colors.primaryLight + '33' }]}>
+                  <Text style={[styles.modalLetterText, { color: colors.primary }]}>
                     {selectedEntry?.name.charAt(0).toUpperCase()}
                   </Text>
                 </View>
                 <TouchableOpacity
-                  style={styles.closeButton}
+                  style={[styles.closeButton, { backgroundColor: theme === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0,0,0,0.05)' }]}
                   onPress={() => setModalVisible(false)}
                 >
-                  <Ionicons name="close" size={24} color="#fff" />
+                  <Ionicons name="close" size={24} color={colors.text} />
                 </TouchableOpacity>
               </View>
 
@@ -338,27 +363,27 @@ export default function HomeScreen() {
                 showsVerticalScrollIndicator={false}
               >
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
-                  <Text style={[styles.modalTitle, { marginBottom: 0, flex: 1 }]}>{selectedEntry?.name}</Text>
-                  <View style={styles.modalCategoryBadge}>
-                    <Text style={{ color: '#4c669f', fontWeight: 'bold', fontSize: 12 }}>
+                  <Text style={[styles.modalTitle, { color: colors.text, fontSize: 28 * fontSizeMultiplier, marginBottom: 0, flex: 1 }]}>{selectedEntry?.name}</Text>
+                  <View style={[styles.modalCategoryBadge, { backgroundColor: colors.primaryLight + '33' }]}>
+                    <Text style={{ color: colors.primary, fontWeight: 'bold', fontSize: 12 * fontSizeMultiplier }}>
                       {selectedEntry?.category}
                     </Text>
                   </View>
                 </View>
 
-                <View style={styles.divider} />
+                <View style={[styles.divider, { backgroundColor: colors.border }]} />
 
                 {/* Quick Access to Images */}
                 {selectedEntry && getQuickAccessPoints(selectedEntry.points).size > 0 && (
                   <View style={styles.quickAccessSection}>
-                    <Text style={styles.quickAccessTitle}>
-                      <Ionicons name="images-outline" size={14} color="#10b981" /> Ver na Imagem Anatômica
+                    <Text style={[styles.quickAccessTitle, { color: colors.text }]}>
+                      <Ionicons name="images-outline" size={14} color={colors.primary} /> Ver na Imagem Anatômica
                     </Text>
                     <View style={styles.quickAccessGrid}>
                       {Array.from(getQuickAccessPoints(selectedEntry.points)).map(([region, points]) => (
                         <TouchableOpacity
                           key={region}
-                          style={styles.quickAccessCard}
+                          style={[styles.quickAccessCard, { backgroundColor: colors.surface, borderColor: colors.border }]}
                           onPress={() => openAnatomyImage(points[0], region)}
                         >
                           <Image
@@ -367,8 +392,8 @@ export default function HomeScreen() {
                             contentFit="cover"
                           />
                           <View style={styles.quickAccessInfo}>
-                            <Text style={styles.quickAccessRegion}>{REGION_NAMES[region]}</Text>
-                            <Text style={styles.quickAccessPoints} numberOfLines={1}>
+                            <Text style={[styles.quickAccessRegion, { color: colors.text }]}>{REGION_NAMES[region]}</Text>
+                            <Text style={[styles.quickAccessPoints, { color: colors.textSecondary }]} numberOfLines={1}>
                               {points.slice(0, 4).join(', ')}{points.length > 4 ? '...' : ''}
                             </Text>
                           </View>
@@ -378,15 +403,19 @@ export default function HomeScreen() {
                   </View>
                 )}
 
-                <View style={styles.divider} />
+                <View style={[styles.divider, { backgroundColor: colors.border }]} />
 
-                <Text style={styles.pointsLabel}>
-                  <Ionicons name="locate" size={16} color="#8B5CF6" /> Pontos de Acupuntura
+                <Text style={[styles.pointsLabel, { color: colors.text, fontSize: 18 * fontSizeMultiplier }]}>
+                  <Ionicons name="locate" size={18 * fontSizeMultiplier} color={colors.primary} /> Pontos de Acupuntura
                 </Text>
-                <Text style={styles.pointsHint}>
+                <Text style={[styles.pointsHint, { color: colors.textSecondary, fontSize: 14 * fontSizeMultiplier }]}>
                   Toque nos pontos destacados para ver na imagem
                 </Text>
-                {selectedEntry && renderPointsWithLinks(selectedEntry.points)}
+                {selectedEntry && (
+                  <Text style={[styles.modalPoints, { color: colors.text, fontSize: 18 * fontSizeMultiplier, lineHeight: 32 * fontSizeMultiplier }]}>
+                    {renderPointsWithLinks(selectedEntry.points)}
+                  </Text>
+                )}
               </ScrollView>
             </LinearGradient>
           </View>
@@ -400,10 +429,10 @@ export default function HomeScreen() {
         visible={anatomyModalVisible}
         onRequestClose={() => setAnatomyModalVisible(false)}
       >
-        <GestureHandlerRootView style={{ flex: 1, backgroundColor: '#1a1a2e' }}>
+        <GestureHandlerRootView style={{ flex: 1, backgroundColor: colors.background }}>
           {/* Header */}
           <LinearGradient
-            colors={['#2d1b4e', 'transparent']}
+            colors={theme === 'dark' ? ['#2d1b4e', 'transparent'] : ['#FFFFFF', 'rgba(255,255,255,0)']}
             style={{
               position: 'absolute',
               top: 0,
@@ -419,10 +448,10 @@ export default function HomeScreen() {
             }}
           >
             <View>
-              <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#fff' }}>
+              <Text style={{ fontSize: 24 * fontSizeMultiplier, fontWeight: 'bold', color: colors.text }}>
                 {selectedRegion ? REGION_NAMES[selectedRegion] : ''}
               </Text>
-              <Text style={{ fontSize: 16, color: '#a78bfa', marginTop: 4 }}>
+              <Text style={{ fontSize: 16 * fontSizeMultiplier, color: colors.primaryLight, marginTop: 4 }}>
                 Ponto: {selectedPointName}
               </Text>
             </View>
@@ -431,13 +460,13 @@ export default function HomeScreen() {
                 width: 40,
                 height: 40,
                 borderRadius: 20,
-                backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                backgroundColor: theme === 'dark' ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.1)',
                 alignItems: 'center',
                 justifyContent: 'center',
               }}
               onPress={() => setAnatomyModalVisible(false)}
             >
-              <Ionicons name="close" size={24} color="#fff" />
+              <Ionicons name="close" size={24} color={colors.text} />
             </TouchableOpacity>
           </LinearGradient>
 
@@ -462,13 +491,15 @@ export default function HomeScreen() {
             gap: 8,
             zIndex: 10,
           }}>
-            <Ionicons name="hand-left" size={16} color="#8B5CF6" />
-            <Text style={{ color: '#9ca3af', fontSize: 14 }}>
+            <Ionicons name="hand-left" size={16} color={colors.primary} />
+            <Text style={{ color: colors.textSecondary, fontSize: 14 }}>
               Pinça para zoom • Arraste para mover
             </Text>
           </View>
         </GestureHandlerRootView>
       </Modal>
+
+      <SettingsModal visible={settingsVisible} onClose={() => setSettingsVisible(false)} />
     </View>
   );
 }
