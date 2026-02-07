@@ -1,3 +1,4 @@
+import { ZoomableImage } from '@/components/ZoomableImage';
 import {
   acupunctureData,
   AcupunctureException,
@@ -23,11 +24,12 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 // Anatomy images
 const ANATOMY_IMAGES: Record<AnatomyRegionId, any> = {
@@ -50,7 +52,6 @@ export default function HomeScreen() {
   const [anatomyModalVisible, setAnatomyModalVisible] = useState(false);
   const [selectedRegion, setSelectedRegion] = useState<AnatomyRegionId | null>(null);
   const [selectedPointName, setSelectedPointName] = useState<string>('');
-  const [zoomScale, setZoomScale] = useState(1);
 
   const filteredData = useMemo(() => {
     let result = acupunctureData || [];
@@ -86,7 +87,6 @@ export default function HomeScreen() {
   const openAnatomyImage = useCallback((point: string, region: AnatomyRegionId) => {
     setSelectedPointName(point);
     setSelectedRegion(region);
-    setZoomScale(1);
     setAnatomyModalVisible(true);
   }, []);
 
@@ -393,96 +393,81 @@ export default function HomeScreen() {
         </View>
       </Modal>
 
-      {/* Anatomy Image Modal */}
+      {/* Anatomy Image Modal with Pinch-to-Zoom */}
       <Modal
         animationType="fade"
-        transparent={true}
+        transparent={false}
         visible={anatomyModalVisible}
         onRequestClose={() => setAnatomyModalVisible(false)}
       >
-        <View style={styles.anatomyModalOverlay}>
-          <View style={styles.anatomyModalContent}>
-            <LinearGradient
-              colors={['#2d1b4e', '#1a1a2e']}
-              style={styles.anatomyModalGradient}
+        <GestureHandlerRootView style={{ flex: 1, backgroundColor: '#1a1a2e' }}>
+          {/* Header */}
+          <LinearGradient
+            colors={['#2d1b4e', 'transparent']}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              paddingTop: 60,
+              paddingHorizontal: 20,
+              paddingBottom: 20,
+              zIndex: 10,
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'flex-start',
+            }}
+          >
+            <View>
+              <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#fff' }}>
+                {selectedRegion ? REGION_NAMES[selectedRegion] : ''}
+              </Text>
+              <Text style={{ fontSize: 16, color: '#a78bfa', marginTop: 4 }}>
+                Ponto: {selectedPointName}
+              </Text>
+            </View>
+            <TouchableOpacity
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: 20,
+                backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+              onPress={() => setAnatomyModalVisible(false)}
             >
-              <View style={styles.anatomyModalHeader}>
-                <View>
-                  <Text style={styles.anatomyModalTitle}>
-                    {selectedRegion ? REGION_NAMES[selectedRegion] : ''}
-                  </Text>
-                  <Text style={styles.anatomyModalSubtitle}>
-                    Ponto: {selectedPointName}
-                  </Text>
-                </View>
-                <TouchableOpacity
-                  style={styles.closeButton}
-                  onPress={() => setAnatomyModalVisible(false)}
-                >
-                  <Ionicons name="close" size={24} color="#fff" />
-                </TouchableOpacity>
-              </View>
+              <Ionicons name="close" size={24} color="#fff" />
+            </TouchableOpacity>
+          </LinearGradient>
 
-              <View style={styles.imageContainer}>
-                <ScrollView
-                  maximumZoomScale={3}
-                  minimumZoomScale={1}
-                  centerContent={true}
-                  showsVerticalScrollIndicator={false}
-                  showsHorizontalScrollIndicator={false}
-                  contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
-                >
-                  <ScrollView
-                    horizontal={true}
-                    maximumZoomScale={3}
-                    minimumZoomScale={1}
-                    centerContent={true}
-                    showsHorizontalScrollIndicator={false}
-                    showsVerticalScrollIndicator={false}
-                    contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
-                  >
-                    {selectedRegion && (
-                      <Image
-                        source={ANATOMY_IMAGES[selectedRegion]}
-                        style={[
-                          styles.anatomyImage,
-                          {
-                            width: SCREEN_WIDTH * zoomScale,
-                            height: SCREEN_WIDTH * zoomScale
-                          }
-                        ]}
-                        contentFit="contain"
-                      />
-                    )}
-                  </ScrollView>
-                </ScrollView>
+          {/* Zoomable Image Component */}
+          {selectedRegion && (
+            <ZoomableImage
+              source={ANATOMY_IMAGES[selectedRegion]}
+              width={SCREEN_WIDTH}
+              height={SCREEN_HEIGHT}
+            />
+          )}
 
-                {/* Zoom Controls Overlay */}
-                <View style={styles.zoomControls}>
-                  <TouchableOpacity
-                    style={styles.zoomButton}
-                    onPress={() => setZoomScale(Math.min(zoomScale + 0.5, 3))}
-                  >
-                    <Ionicons name="add" size={24} color="#fff" />
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={styles.zoomButton}
-                    onPress={() => setZoomScale(Math.max(zoomScale - 0.5, 1))}
-                  >
-                    <Ionicons name="remove" size={24} color="#fff" />
-                  </TouchableOpacity>
-                </View>
-              </View>
-
-              <View style={styles.anatomyModalFooter}>
-                <Ionicons name="search" size={16} color="#8B5CF6" />
-                <Text style={styles.anatomyModalHint}>
-                  Use os botões para zoom
-                </Text>
-              </View>
-            </LinearGradient>
+          {/* Footer */}
+          <View style={{
+            position: 'absolute',
+            bottom: 40,
+            left: 0,
+            right: 0,
+            alignItems: 'center',
+            flexDirection: 'row',
+            justifyContent: 'center',
+            gap: 8,
+            zIndex: 10,
+          }}>
+            <Ionicons name="hand-left" size={16} color="#8B5CF6" />
+            <Text style={{ color: '#9ca3af', fontSize: 14 }}>
+              Pinça para zoom • Arraste para mover
+            </Text>
           </View>
-        </View>
+        </GestureHandlerRootView>
       </Modal>
     </View>
   );
@@ -828,9 +813,15 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    overflow: 'hidden',
+  },
+  zoomableImage: {
+    width: SCREEN_WIDTH,
+    height: SCREEN_WIDTH,
   },
   anatomyImage: {
-    // Width/Height are dynamic
+    width: SCREEN_WIDTH,
+    height: SCREEN_WIDTH,
   },
   zoomControls: {
     position: 'absolute',
