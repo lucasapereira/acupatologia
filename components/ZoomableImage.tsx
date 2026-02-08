@@ -1,4 +1,5 @@
 
+import { useTheme } from '@/context/ThemeContext';
 import { Image } from 'expo-image';
 import React from 'react';
 import { Dimensions, StyleSheet, View } from 'react-native';
@@ -24,6 +25,7 @@ function clamp(value: number, min: number, max: number) {
 }
 
 export function ZoomableImage({ source, width = SCREEN_WIDTH, height = SCREEN_HEIGHT }: ZoomableImageProps) {
+    const { colors } = useTheme();
     const scale = useSharedValue(1);
     const savedScale = useSharedValue(1);
     const translateX = useSharedValue(0);
@@ -132,7 +134,7 @@ export function ZoomableImage({ source, width = SCREEN_WIDTH, height = SCREEN_HE
     }));
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, { backgroundColor: colors.background }]}>
             <GestureDetector gesture={composed}>
                 <Animated.View style={[{ width, height }, animatedStyle]}>
                     <Image

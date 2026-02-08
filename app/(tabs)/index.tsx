@@ -209,13 +209,13 @@ export default function HomeScreen() {
             <Ionicons name="search" size={20} color={colors.icon} style={styles.searchIcon} />
             <TextInput
               style={[styles.searchInput, {
-                backgroundColor: theme === 'dark' ? 'rgba(255, 255, 255, 0.9)' : '#fff',
-                color: '#333', // Always dark text in search input as background is light
+                backgroundColor: colors.inputBackground,
+                color: colors.text,
                 borderColor: colors.border,
                 borderWidth: 1
               }]}
               placeholder="Buscar patologia, ponto..."
-              placeholderTextColor="#999"
+              placeholderTextColor={colors.textSecondary}
               value={searchQuery}
               onChangeText={setSearchQuery}
             />
@@ -228,13 +228,13 @@ export default function HomeScreen() {
         </View>
 
         {/* Category Tabs */}
-        <View style={[styles.categoryContainer, { backgroundColor: theme === 'dark' ? 'rgba(0, 0, 0, 0.2)' : 'rgba(0,0,0,0.05)', borderBottomColor: colors.border }]}>
+        <View style={[styles.categoryContainer, { backgroundColor: colors.surface + '80', borderBottomColor: colors.border }]}>
           {CATEGORIES.map((cat) => (
             <TouchableOpacity
               key={cat}
               style={[
                 styles.categoryTab,
-                { backgroundColor: theme === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0,0,0,0.05)' },
+                { backgroundColor: colors.surfaceHighlight },
                 selectedCategory === cat && { backgroundColor: colors.primary }
               ]}
               onPress={() => {
@@ -256,13 +256,13 @@ export default function HomeScreen() {
         </View>
 
         {!searchQuery && (
-          <View style={[styles.alphabetContainer, { backgroundColor: theme === 'dark' ? 'rgba(0, 0, 0, 0.2)' : 'rgba(0,0,0,0.05)', borderBottomColor: colors.border }]}>
+          <View style={[styles.alphabetContainer, { backgroundColor: colors.surface + '80', borderBottomColor: colors.border }]}>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.alphabetScroll}>
               <TouchableOpacity
                 style={[
                   styles.letterButton,
                   { width: 'auto', paddingHorizontal: 12 },
-                  { backgroundColor: theme === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0,0,0,0.05)' },
+                  { backgroundColor: colors.surfaceHighlight },
                   !selectedLetter && { backgroundColor: colors.primary },
                 ]}
                 onPress={() => setSelectedLetter(null)}
@@ -286,7 +286,7 @@ export default function HomeScreen() {
                     key={letter}
                     style={[
                       styles.letterButton,
-                      { backgroundColor: theme === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0,0,0,0.05)' },
+                      { backgroundColor: colors.surfaceHighlight },
                       selectedLetter === letter && { backgroundColor: colors.primary },
                       !hasEntries && styles.letterButtonDisabled,
                     ]}
@@ -320,7 +320,7 @@ export default function HomeScreen() {
           windowSize={10}
           ListEmptyComponent={
             <View style={styles.emptyContainer}>
-              <Ionicons name="documents-outline" size={48} color="#ccc" />
+              <Ionicons name="documents-outline" size={48} color={colors.icon} />
               <Text style={styles.emptyText}>Nenhum item encontrado</Text>
               {(searchQuery || selectedLetter) && (
                 <TouchableOpacity style={styles.clearButton} onPress={clearFilters}>
@@ -636,7 +636,7 @@ const styles = StyleSheet.create({
   },
   itemSnippet: {
     fontSize: 12,
-    color: '#8B5CF6',
+    // color: colors.primary handled in render
     fontStyle: 'italic',
   },
   emptyContainer: {
@@ -647,7 +647,7 @@ const styles = StyleSheet.create({
   emptyText: {
     marginTop: 16,
     fontSize: 16,
-    color: '#999',
+    // color: colors.textSecondary,
     marginBottom: 20,
   },
   clearButton: {

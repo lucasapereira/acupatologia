@@ -14,6 +14,8 @@ export const Colors = {
         tabIconDefault: '#687076',
         tabIconSelected: '#8B5CF6',
         error: '#EF4444',
+        inputBackground: '#FFFFFF',
+        separator: '#E1E4E8',
     },
     dark: {
         text: '#ECEDEE',
@@ -30,5 +32,7 @@ export const Colors = {
         tabIconDefault: '#9BA1A6',
         tabIconSelected: '#8B5CF6',
         error: '#EF4444',
+        inputBackground: 'rgba(255, 255, 255, 0.1)',
+        separator: 'rgba(255, 255, 255, 0.1)',
     },
 };
