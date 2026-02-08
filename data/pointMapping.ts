@@ -182,6 +182,7 @@ export const REGION_NAMES: Record<AnatomyRegionId, string> = {
 
 // Extract point codes from a text string
 export function extractPoints(text: string): string[] {
+    if (!text) return [];
     // Match patterns like E36, BP6, IG4, VC12, VG14, etc.
     const pointPattern = /\b(E|BP|B|R|F|P|IG|ID|C|TA|CS|VC|VG|VB)\d+\b/gi;
     const matches: string[] = text.match(pointPattern) || [];

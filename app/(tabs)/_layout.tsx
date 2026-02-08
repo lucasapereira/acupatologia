@@ -49,6 +49,24 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="timer"
+        options={{
+          title: 'Timer',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="timer-outline" size={size * fontSizeMultiplier} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="patients"
+        options={{
+          title: 'Ficha de Atendimento',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="people-outline" size={size * fontSizeMultiplier} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="explore"
         options={{
           title: 'Sobre',

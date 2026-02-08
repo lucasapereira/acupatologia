@@ -29,6 +29,7 @@ import {
   View
 } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
@@ -45,6 +46,7 @@ const CATEGORIES: CategoryType[] = ['Patologia', 'Síndrome', 'Ponto'];
 
 
 export default function HomeScreen() {
+  const insets = useSafeAreaInsets();
   const { theme, colors, fontSizeMultiplier } = useTheme();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<CategoryType>('Patologia');
@@ -360,6 +362,7 @@ export default function HomeScreen() {
 
               <ScrollView
                 style={styles.modalScroll}
+                contentContainerStyle={{ paddingBottom: Math.max(insets.bottom, 40) }}
                 showsVerticalScrollIndicator={false}
               >
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>

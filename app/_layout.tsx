@@ -4,6 +4,7 @@ import { StatusBar } from 'expo-status-bar';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-reanimated';
 
+import { PatientProvider } from '@/context/PatientContext';
 import { ThemeProvider, useTheme } from '@/context/ThemeContext';
 
 export const unstable_settings = {
@@ -28,7 +29,9 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ThemeProvider>
-        <RootLayoutNav />
+        <PatientProvider>
+          <RootLayoutNav />
+        </PatientProvider>
       </ThemeProvider>
     </GestureHandlerRootView>
   );
