@@ -105,7 +105,7 @@ export default function HomeScreen() {
       .filter(p => p.region !== null);
 
     if (pointsWithRegion.length === 0) {
-      return <Text style={styles.modalPoints}>{text}</Text>;
+      return <Text style={[styles.modalPoints, { color: colors.text }]}>{text.replace(/\./g, '.\n')}</Text>;
     }
 
     // Create a regex to match all points that have images
@@ -117,7 +117,7 @@ export default function HomeScreen() {
     const parts = text.split(regex);
 
     return (
-      <Text style={styles.modalPoints}>
+      <Text style={[styles.modalPoints, { color: colors.text }]}>
         {parts.map((part, index) => {
           const matchingPoint = pointsWithRegion.find(
             p => p.point.toUpperCase() === part.toUpperCase()
@@ -127,15 +127,16 @@ export default function HomeScreen() {
             return (
               <Text
                 key={index}
-                style={styles.linkablePoint}
+                style={[styles.linkablePoint, { color: colors.primary }]}
                 onPress={() => openAnatomyImage(matchingPoint.point, matchingPoint.region!)}
               >
                 {part}
-                <Ionicons name="image-outline" size={12} color="#8B5CF6" />
+                <Ionicons name="image-outline" size={12} color={colors.primary} />
               </Text>
             );
           }
-          return <Text key={index}>{part}</Text>;
+          // Add line break after dots for better readability
+          return <Text key={index}>{part.replace(/\./g, '.\n')}</Text>;
         })}
       </Text>
     );
@@ -182,7 +183,7 @@ export default function HomeScreen() {
           <Text style={[styles.itemTitle, { color: colors.text, fontSize: 18 * fontSizeMultiplier }]}>{item.name}</Text>
         </View>
         <Text style={[styles.itemDescription, { color: colors.textSecondary, fontSize: 14 * fontSizeMultiplier }]} numberOfLines={2}>
-          {item.points}
+          {item.points.replace(/\./g, '.\n')}
         </Text>
       </View>
       <Ionicons name="chevron-forward" size={20 * fontSizeMultiplier} color={colors.icon} />

@@ -1,9 +1,24 @@
 import { useTheme } from '@/context/ThemeContext';
 import { Ionicons } from '@expo/vector-icons';
 import { Audio } from 'expo-av';
+import * as Notifications from 'expo-notifications';
 import React, { useEffect, useRef, useState } from 'react';
-import { Alert, Keyboard, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Alert, AppState, Keyboard, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+// Configure notifications handler
+// Configure notifications handler
+try {
+    Notifications.setNotificationHandler({
+        handleNotification: async () => ({
+            shouldShowAlert: true,
+            shouldPlaySound: true,
+            shouldSetBadge: false,
+        }),
+    });
+} catch (error) {
+    console.warn('Failed to set notification handler:', error);
+}
 
 export default function TimerScreen() {
     const { colors, fontSizeMultiplier } = useTheme();
@@ -17,24 +32,33 @@ export default function TimerScreen() {
     const [initialTime, setInitialTime] = useState(DEFAULT_TIME);
     const [isEditing, setIsEditing] = useState(false);
     const [inputValue, setInputValue] = useState('20');
+    const [endTime, setEndTime] = useState<number | null>(null);
+
     const soundRef = useRef<Audio.Sound | null>(null);
+    const notificationId = useRef<string | null>(null);
+    const appState = useRef(AppState.currentState);
 
+    // Audio setup on mount
     useEffect(() => {
-        let interval: NodeJS.Timeout | null = null;
+        const setup = async () => {
+            // Allow audio to play in silent mode and in background
+            await Audio.setAudioModeAsync({
+                playsInSilentModeIOS: true,
+                staysActiveInBackground: true,
+                shouldDuckAndroid: true,
+            });
+        };
 
-        if (isActive && timeLeft > 0) {
-            interval = setInterval(() => {
-                setTimeLeft((prevTime) => prevTime - 1);
-            }, 1000);
-        } else if (timeLeft === 0 && isActive) {
-            setIsActive(false);
-            playSound();
-        }
+        setup();
+
+        const subscription = AppState.addEventListener('change', nextAppState => {
+            appState.current = nextAppState;
+        });
 
         return () => {
-            if (interval) clearInterval(interval);
+            subscription.remove();
         };
-    }, [isActive, timeLeft]);
+    }, []);
 
     useEffect(() => {
         return () => {
@@ -43,6 +67,14 @@ export default function TimerScreen() {
             }
         };
     }, []);
+
+    // Helper to clear existing notifications
+    const cancelNotification = async () => {
+        if (notificationId.current) {
+            await Notifications.cancelScheduledNotificationAsync(notificationId.current);
+            notificationId.current = null;
+        }
+    };
 
     const playSound = async () => {
         try {
@@ -60,26 +92,134 @@ export default function TimerScreen() {
             } catch (e) {
                 console.log('Local sound not found, trying remote...');
                 const { sound } = await Audio.Sound.createAsync(
-                    { uri: 'https://cdn.freesound.org/previews/339/339809_4930326-lq.mp3' } // Fallback Tibetan bell sound
+                    { uri: 'https://cdn.freesound.org/previews/339/339809_4930326-lq.mp3' }
                 );
                 soundRef.current = sound;
                 await sound.playAsync();
             }
         } catch (error) {
             console.log('Error playing sound', error);
-            Alert.alert('Timer Finalizado', 'O tempo acabou! (Som não pôde ser reproduzido)');
+            if (appState.current === 'active') {
+                Alert.alert('Timer Finalizado', 'O tempo acabou! (Som não pôde ser reproduzido)');
+            }
         }
     };
 
-    const toggleTimer = () => {
-        setIsActive(!isActive);
+    // Helper to schedule notification
+    const scheduleNotification = async (seconds: number) => {
+        await cancelNotification();
+
+        try {
+            const id = await Notifications.scheduleNotificationAsync({
+                content: {
+                    title: "Timer Finalizado 🔔",
+                    body: "Sua sessão de acupuntura terminou.",
+                    sound: process.env.EXPO_PUBLIC_TIMER_SOUND || undefined,
+                },
+                trigger: {
+                    type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
+                    seconds: seconds,
+                    channelId: 'timer-channel',
+                },
+            });
+            notificationId.current = id;
+        } catch (error) {
+            console.log("Error scheduling notification:", error);
+            // Fallback for environments where notifications fail (like Expo Go)
+            // We can just log it, the timer will still work without background notification
+        }
+    };
+
+    useEffect(() => {
+        let interval: NodeJS.Timeout | null = null;
+
+        if (isActive && endTime) {
+            interval = setInterval(() => {
+                const now = Date.now();
+                const diff = Math.ceil((endTime - now) / 1000);
+
+                if (diff <= 0) {
+                    setTimeLeft(0);
+                    setIsActive(false);
+                    setEndTime(null);
+
+                    if (appState.current === 'active') {
+                        playSound();
+                        cancelNotification();
+                    }
+                } else {
+                    setTimeLeft(diff);
+                }
+            }, 500);
+        }
+
+        return () => {
+            if (interval) clearInterval(interval);
+        };
+    }, [isActive, endTime]);
+
+    const startTimer = () => {
+        const targetTime = Date.now() + timeLeft * 1000;
+        setEndTime(targetTime);
+        setIsActive(true);
         setIsEditing(false);
+        scheduleNotification(timeLeft);
+    };
+
+    const toggleTimer = async () => {
+        if (isActive) {
+            // Pausing
+            setIsActive(false);
+            setEndTime(null);
+            cancelNotification();
+        } else {
+            // Starting - Check permissions first
+            try {
+                const { status } = await Notifications.getPermissionsAsync();
+
+                if (status !== 'granted') {
+                    Alert.alert(
+                        "Permissão Necessária",
+                        "Para que o alarme toque mesmo se você sair do aplicativo, precisamos da sua permissão para enviar notificações.",
+                        [
+                            {
+                                text: "Cancelar",
+                                style: "cancel"
+                            },
+                            {
+                                text: "Permitir",
+                                onPress: async () => {
+                                    try {
+                                        const { status: newStatus } = await Notifications.requestPermissionsAsync();
+                                        // We start the timer regardless, because the user explicitly said "Allow"
+                                        // If they deny in the system dialog, we still run the timer locally
+                                        // expecting they might stay in the app, or we just fail to notify.
+                                        startTimer();
+                                    } catch (e) {
+                                        console.warn('Failed to request permissions', e);
+                                        startTimer();
+                                    }
+                                }
+                            }
+                        ]
+                    );
+                    return;
+                }
+
+                startTimer();
+            } catch (error) {
+                console.warn('Notification permissions check failed, starting timer anyway', error);
+                startTimer();
+            }
+        }
     };
 
     const resetTimer = () => {
         setIsActive(false);
+        setEndTime(null);
         setTimeLeft(initialTime);
         setIsEditing(false);
+        cancelNotification();
         if (soundRef.current) {
             soundRef.current.stopAsync();
         }
@@ -89,8 +229,10 @@ export default function TimerScreen() {
         const newTime = initialTime + minutes * 60;
         if (newTime > 0 && newTime <= 120 * 60) {
             setInitialTime(newTime);
-            setTimeLeft(newTime);
             setIsActive(false);
+            setEndTime(null);
+            setTimeLeft(newTime);
+            cancelNotification();
             setIsEditing(false);
         }
     };

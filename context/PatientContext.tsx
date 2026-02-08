@@ -34,6 +34,7 @@ interface PatientContextType {
     updateAppointmentFeedback: (appointmentId: string, painLevel: number) => Promise<void>;
     getPatientAppointments: (patientId: string) => Appointment[];
     getAppointment: (appointmentId: string) => Appointment | undefined;
+    deleteAppointment: (appointmentId: string) => Promise<void>;
 }
 
 const PatientContext = createContext<PatientContextType | undefined>(undefined);
@@ -141,6 +142,11 @@ export const PatientProvider: React.FC<{ children: React.ReactNode }> = ({ child
         await saveAppointments(newAppointments);
     }, [appointments]);
 
+    const deleteAppointment = useCallback(async (appointmentId: string) => {
+        const newAppointments = appointments.filter(a => a.id !== appointmentId);
+        await saveAppointments(newAppointments);
+    }, [appointments]);
+
     const getPatientAppointments = useCallback((patientId: string) => {
         return appointments
             .filter(a => a.patientId === patientId)
@@ -162,7 +168,8 @@ export const PatientProvider: React.FC<{ children: React.ReactNode }> = ({ child
             addAppointment,
             updateAppointmentFeedback,
             getPatientAppointments,
-            getAppointment
+            getAppointment,
+            deleteAppointment
         }}>
             {children}
         </PatientContext.Provider>

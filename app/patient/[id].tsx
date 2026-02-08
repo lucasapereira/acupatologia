@@ -6,6 +6,7 @@ import {
     Alert,
     FlatList,
     Modal,
+    Platform,
     ScrollView,
     StatusBar,
     StyleSheet,
@@ -23,7 +24,7 @@ import { useTheme } from '@/context/ThemeContext';
 export default function PatientDetailScreen() {
     const { id } = useLocalSearchParams<{ id: string }>();
     const { theme, colors, fontSizeMultiplier } = useTheme();
-    const { patients, getPatientAppointments, updateAppointmentFeedback } = usePatients();
+    const { patients, getPatientAppointments, updateAppointmentFeedback, deletePatient, deleteAppointment } = usePatients();
     const insets = useSafeAreaInsets();
 
     const patient = patients.find(p => p.id === id);
@@ -77,24 +78,78 @@ export default function PatientDetailScreen() {
         setFeedbackModalVisible(true);
     };
 
+    const handleDeletePatient = () => {
+        if (Platform.OS === 'web') {
+            if (window.confirm("Excluir Cliente\n\nTem certeza que deseja excluir este cliente e todo seu histórico?")) {
+                deletePatient(id!).then(() => router.back());
+            }
+            return;
+        }
+
+        Alert.alert(
+            "Excluir Cliente",
+            "Tem certeza que deseja excluir este cliente e todo seu histórico?",
+            [
+                { text: "Cancelar", style: "cancel" },
+                {
+                    text: "Excluir",
+                    style: "destructive",
+                    onPress: async () => {
+                        await deletePatient(id!);
+                        router.back();
+                    }
+                }
+            ]
+        );
+    };
+
+    const handleDeleteAppointment = (appointmentId: string) => {
+        if (Platform.OS === 'web') {
+            if (window.confirm("Excluir Atendimento\n\nTem certeza que deseja excluir este atendimento?")) {
+                deleteAppointment(appointmentId);
+            }
+            return;
+        }
+
+        Alert.alert(
+            "Excluir Atendimento",
+            "Tem certeza que deseja excluir este atendimento?",
+            [
+                { text: "Cancelar", style: "cancel" },
+                {
+                    text: "Excluir",
+                    style: "destructive",
+                    onPress: async () => {
+                        await deleteAppointment(appointmentId);
+                    }
+                }
+            ]
+        );
+    };
+
     const renderAppointmentItem = ({ item }: { item: Appointment }) => (
         <View style={[styles.card, { backgroundColor: colors.surface, borderColor: colors.border }]}>
             <View style={styles.cardHeader}>
                 <Text style={[styles.cardDate, { color: colors.textSecondary }]}>
                     {new Date(item.date).toLocaleDateString()}
                 </Text>
-                {item.painLevel !== undefined ? (
-                    <View style={[styles.painBadge, { backgroundColor: item.painLevel <= 3 ? '#4ade80' : item.painLevel <= 7 ? '#facc15' : '#f87171' }]}>
-                        <Text style={styles.painText}>Dor: {item.painLevel}</Text>
-                    </View>
-                ) : (
-                    <TouchableOpacity
-                        style={[styles.feedbackButton, { borderColor: colors.primary }]}
-                        onPress={() => openFeedbackModal(item)}
-                    >
-                        <Text style={{ color: colors.primary, fontSize: 12 }}>Avaliar Dor</Text>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                    {item.painLevel !== undefined ? (
+                        <View style={[styles.painBadge, { backgroundColor: item.painLevel <= 3 ? '#4ade80' : item.painLevel <= 7 ? '#facc15' : '#f87171' }]}>
+                            <Text style={styles.painText}>Dor: {item.painLevel}</Text>
+                        </View>
+                    ) : (
+                        <TouchableOpacity
+                            style={[styles.feedbackButton, { borderColor: colors.primary }]}
+                            onPress={() => openFeedbackModal(item)}
+                        >
+                            <Text style={{ color: colors.primary, fontSize: 12 }}>Avaliar Dor</Text>
+                        </TouchableOpacity>
+                    )}
+                    <TouchableOpacity onPress={() => handleDeleteAppointment(item.id)} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
+                        <Ionicons name="trash-outline" size={20} color={colors.error || '#ef4444'} />
                     </TouchableOpacity>
-                )}
+                </View>
             </View>
 
             <Text style={[styles.cardComplaint, { color: colors.text }]}>{item.complaint}</Text>
@@ -133,6 +188,10 @@ export default function PatientDetailScreen() {
                             <Text style={{ color: colors.textSecondary }}>{patient.phone}</Text>
                         )}
                     </View>
+                    <View style={{ flex: 1 }} />
+                    <TouchableOpacity onPress={handleDeletePatient} style={styles.deleteButton}>
+                        <Ionicons name="trash-outline" size={24} color={colors.error || '#ef4444'} />
+                    </TouchableOpacity>
                 </View>
 
                 <ScrollView contentContainerStyle={[styles.scrollContent, { paddingBottom: 100 + insets.bottom }]}>
@@ -353,5 +412,9 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         paddingVertical: 10,
         borderRadius: 8,
+    },
+    deleteButton: {
+        padding: 8,
+        marginLeft: 8,
     },
 });

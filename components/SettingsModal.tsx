@@ -1,7 +1,10 @@
+import { usePatients } from '@/context/PatientContext';
 import { useTheme } from '@/context/ThemeContext';
 import { Ionicons } from '@expo/vector-icons';
+import * as FileSystem from 'expo-file-system/legacy';
+import * as Sharing from 'expo-sharing';
 import React from 'react';
-import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 interface SettingsModalProps {
     visible: boolean;
@@ -10,12 +13,50 @@ interface SettingsModalProps {
 
 export function SettingsModal({ visible, onClose }: SettingsModalProps) {
     const { theme, toggleTheme, fontSizeMultiplier, setFontSizeMultiplier, colors } = useTheme();
+    const { patients, appointments } = usePatients();
 
     // Helper to get font size label
     const getFontSizeLabel = (size: number) => {
         if (size <= 1.0) return 'Padrão';
         if (size <= 1.2) return 'Médio';
         return 'Grande';
+    };
+
+    const handleExport = async () => {
+        try {
+            // Create CSV content for Patients
+            let csvContent = 'ID,Nome,Telefone,Notas,Data de Criação\n';
+            patients.forEach(patient => {
+                const escape = (text: string | undefined) => `"${(text || '').replace(/"/g, '""')}"`;
+                csvContent += `${escape(patient.id)},${escape(patient.name)},${escape(patient.phone)},${escape(patient.notes)},${escape(patient.createdAt)}\n`;
+            });
+
+            // Create CSV content for Appointments
+            let appointmentsCsv = 'ID,ID Paciente,Nome Paciente,Data,Queixa,Pontos,Notas,Nível de Dor,Data do Feedback\n';
+            appointments.forEach(app => {
+                const patient = patients.find(p => p.id === app.patientId);
+                const escape = (text: string | undefined) => `"${(text || '').replace(/"/g, '""')}"`;
+                appointmentsCsv += `${escape(app.id)},${escape(app.patientId)},${escape(patient ? patient.name : 'Desconhecido')},${escape(app.date)},${escape(app.complaint)},${escape(app.points.join(', '))},${escape(app.notes)},${app.painLevel !== undefined ? app.painLevel : ''},${escape(app.feedbackDate)}\n`;
+            });
+
+            // Combine into one file or export separately? Let's export Appointments as it's more comprehensive
+            // Actually, let's create a file that can be opened in Excel.
+            // Using UTF-8 BOM for Excel to recognize special characters
+            const bom = '\uFEFF';
+            const fullCsv = bom + appointmentsCsv;
+
+            const fileUri = FileSystem.documentDirectory + 'acupatologia_historico.csv';
+            await FileSystem.writeAsStringAsync(fileUri, fullCsv, { encoding: 'utf8' });
+
+            if (await Sharing.isAvailableAsync()) {
+                await Sharing.shareAsync(fileUri);
+            } else {
+                Alert.alert('Erro', 'Compartilhamento não disponível neste dispositivo');
+            }
+        } catch (error) {
+            console.error('Export error:', error);
+            Alert.alert('Erro', 'Falha ao exportar dados');
+        }
     };
 
     return (
@@ -28,7 +69,7 @@ export function SettingsModal({ visible, onClose }: SettingsModalProps) {
             <View style={[styles.overlay, { backgroundColor: 'rgba(0,0,0,0.5)' }]}>
                 <View style={[styles.content, { backgroundColor: colors.background, borderColor: colors.border }]}>
                     <View style={styles.header}>
-                        <Text style={[styles.title, { color: colors.text }]}>Ajustes de Visualização</Text>
+                        <Text style={[styles.title, { color: colors.text }]}>Ajustes</Text>
                         <TouchableOpacity onPress={onClose} style={styles.closeButton}>
                             <Ionicons name="close" size={24} color={colors.textSecondary} />
                         </TouchableOpacity>
@@ -87,6 +128,24 @@ export function SettingsModal({ visible, onClose }: SettingsModalProps) {
                         <Text style={[styles.previewText, { color: colors.text, fontSize: 16 * fontSizeMultiplier, marginTop: 12 }]}>
                             Exemplo de texto para leitura.
                         </Text>
+                    </View>
+
+                    <View style={styles.section}>
+                        <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>Dados e Privacidade</Text>
+                        <Text style={{ color: colors.textSecondary, marginBottom: 12, fontSize: 14 }}>
+                            Seus dados são salvos localmente neste dispositivo.
+                            Recomendamos exportar os dados para backup.
+                        </Text>
+                        <TouchableOpacity
+                            style={[
+                                styles.exportButton,
+                                { backgroundColor: colors.surface, borderColor: colors.border, borderWidth: 1 }
+                            ]}
+                            onPress={handleExport}
+                        >
+                            <Ionicons name="download-outline" size={20} color={colors.primary} />
+                            <Text style={[styles.exportButtonText, { color: colors.primary }]}>Exportar Dados (Excel/CSV)</Text>
+                        </TouchableOpacity>
                     </View>
                 </View>
             </View>
@@ -177,4 +236,15 @@ const styles = StyleSheet.create({
     previewText: {
         textAlign: 'center',
     },
+    exportButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 12,
+        borderRadius: 12,
+        gap: 8,
+    },
+    exportButtonText: {
+        fontWeight: '600',
+    }
 });

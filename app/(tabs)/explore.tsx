@@ -23,7 +23,7 @@ export default function AboutScreen() {
               <Ionicons name="leaf" size={48 * fontSizeMultiplier} color={colors.primary} />
             </View>
             <Text style={[styles.title, { color: colors.text, fontSize: 28 * fontSizeMultiplier }]}>Acupatologia</Text>
-            <Text style={[styles.version, { color: colors.textSecondary, fontSize: 14 * fontSizeMultiplier }]}>Versão 1.0.0</Text>
+            <Text style={[styles.version, { color: colors.textSecondary, fontSize: 14 * fontSizeMultiplier }]}>Versão 2.0</Text>
           </View>
 
           <View style={styles.section}>

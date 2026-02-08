@@ -2,7 +2,7 @@
   "expo": {
     "name": "Acupatologia 2.0",
     "slug": "acupatologia",
-    "version": "2.0.0",
+    "version": "2.0.3",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "acupatologia",
@@ -13,7 +13,7 @@
     },
     "android": {
       "package": "com.lucasapereira.acupatologia",
-      "versionCode": 1,
+      "versionCode": 5,
       "adaptiveIcon": {
         "backgroundColor": "#1a1a2e",
         "foregroundImage": "./assets/images/android-icon-foreground.png",

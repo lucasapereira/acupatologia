@@ -2897,24 +2897,472 @@
     "category": "Síndrome"
   },
   {
-    "id": "860",
-    "name": "Pontos dos Meridianos de Acupuntura",
-    "description": "Pontos dos Meridianos de Acupuntura",
-    "points": "",
+    "id": "1000",
+    "name": "B1 Jingming",
+    "description": "B1 Jingming",
+    "points": "Logo acima do canto medial do olho. Indicações: Afecções oculares como conjuntivite e pterígio.",
     "category": "Ponto"
   },
   {
-    "id": "861",
-    "name": "Bexiga - 1-34",
-    "description": "Canal da Bexiga - Pontos 1 a 34",
-    "points": "B1 Jingming: Logo acima do canto medial do olho. Indicações: Afecções oculares como conjuntivite e pterígio. | B2 Zanzhu: Diretamente acima do B1, na incisura supraorbital, na extremidade medial da sobrancelha. Indicações: Cefaleia, tontura, doenças oculares, paralisia facial, sinusite e rinite. | B3 Meichong: Acima da extremidade medial da sobrancelha, 0,5 cun acima da linha do cabelo, entre o B4 e o VG24, na linha vertical do ponto Zanzhu (B2). Indicações: Cefaleia, tontura, obstrução nasal, distúrbios do olfato, lacrimejamento excessivo, conjuntivite, problemas de visão, epilepsia e catarata. | B4 Quchai: 1,5 cun lateral ao VG24, 0,5 cun acima da linha do cabelo. Indicações: Cefaleia frontal, obstrução nasal, epistaxe e problemas de visão. | B5 Wuchu: 1,5 cun lateral ao VG23, 1 cun dentro da linha do cabelo frontal, 0,5 cun diretamente acima do B4. Indicações: Cefaleia, perturbação da visão, epilepsia e tétano. | B6 Chengguang: 1,5 cun da linha do VG, 2,5 cun dentro da linha de frente, 1,5 cun atrás do B5. Indicações: Cefaleia, tontura, resfriado, distúrbios da visão, pterígio, glaucoma e miopia. | B7 Tongtian: 1,5 cun da linha do VG, 4 cun dentro da linha de frente, 1,5 cun atrás do B6. Indicações: Cefaleia, sinusite, rinite, epistaxe, distúrbios do olfato, polipose nasal, rigidez na nuca e tontura. | B8 Luoque: 1,5 cun da linha do VG, 5,5 cun dentro da linha de frente, 1,5 cun atrás do B7. Indicações: Cefaleia parietal, tontura ou vertigem, zumbidos, obstrução nasal, paralisia facial, visão turva e glaucoma. | B9 Yuzhen: 1,3 cun lateral ao VG17, 2,5 cm acima da linha do cabelo na nuca, na borda superior lateral do processo occipital externo. Indicações: Cefaleia (occipital, parietal ou oftálmica), tontura, miopia, obstrução nasal e distúrbios do olfato. | B10 Tianzhu: Na borda lateral do músculo trapézio, na linha do cabelo natural da região occipital. Indicações: Cefaleia occipital ou occipitotemporal, enxaqueca, dor frontal (oftálmica), torcicolo, rigidez e dor na nuca, tontura, insônia, visão turva, faringite, dor nas costas e ombros, obstrução nasal e rinite. | B11 Dashu: 1,5 cun lateral ao VG13, ao nível do espaço entre T1-T2. Indicações: Gripe, resfriado, tosse, rigidez e dor na nuca, dor nas costas e ombros, dor no joelho e dor de garganta. | B12 Fengmen: 1,5 cun da linha do VG, ao nível do espaço entre T2-T3. Indicações: Febre, cefaleia, tosse, rigidez na nuca, dor nas costas, pneumonia, bronquite, urticária e sonolência. | B13 Feishu: 1,5 cun lateral ao VG12, ao nível do espaço entre T3-T4. Tonifica o Qi do Pulmão, descende e dissemina o Qi do Pulmão, clareia o calor do pulmão e libera o exterior. Indicações: Tosse, pneumonia, bronquite, dispneia, asma, tuberculose pulmonar, dor nas costas, dermatite e prurido. | B14 Jueyinshu: 1,5 cun da linha do VG, ao nível do espaço entre T4-T5. Indicações: Dor no peito, neuralgia intercostal, dor de dente, soluço, pericardite, formigamento e frio na região distal dos membros. | B15 Xinshu: 1,5 cun lateral ao VG11, ao nível do espaço entre T5-T6. Indicações: Problemas cardíacos, náuseas, vômitos, dor no peito, ansiedade, epilepsia, esquizofrenia e deficit de memória. | B16 Dushu: 1,5 cun lateral ao VG10, ao nível do espaço entre T6-T7. Indicações: Endocardite, dor no peito (intercostalgia), dor abdominal, soluço, queda de cabelo, prurido e borborigmo. | B17 Geshu: 1,5 cun lateral ao VG9, ao nível do espaço entre T7-T8. Indicações: Hemopatias (hemorragias, anemia), soluço, dor no peito e abdômen, falta de apetite, náuseas, sonolência, febre, suor noturno, neurose, histeria, taquicardia e tuberculose pulmonar. | B18 Ganshu: 1,5 cun lateral ao VG8, ao nível do espaço entre T9-T10. Indicações: Hepatite, hepatomegalia, cirrose, colecistite, afecções dos tendões e olhos, dor nas costas, neuralgias, diabetes, furunculose, linfoadenite, distúrbios genitais e esquizofrenia. | B19 Danshu: 1,5 cun lateral ao VG7, ao nível do espaço entre T10-T11. Indicações: Hepatite, colecistite, dor nas costas, boca amarga, falta de apetite, náuseas, vômito e tuberculose pulmonar. | B20 Pishu: 1,5 cun lateral ao VG6, ao nível do espaço entre T11-T12. Indicações: Anorexia, dor gástrica, úlcera péptica, emagrecimento, hepatite, cirrose, dispepsia, regurgitação, diarreia crônica e distensão abdominal. | B21 Weishu: 1,5 cun da linha do VG, ao nível do espaço entre T12-L1. Indicações: Gastralgia, úlcera péptica, distensão gástrica, dispepsia, anorexia, náuseas, vômito, regurgitação, borborigmo e emagrecimento. | B22 Sanjiaoshu: 1,5 cun lateral ao VG5, ao nível do espaço entre L1-L2. Indicações: Diabetes mellitus, anorexia, dispepsia, indigestão, diarreia, distensão abdominal, borborigmo, ascite, edema e lombalgia. | B23 Shenshu: 1,5 cun lateral ao VG4, ao nível do espaço entre L2-L3. Indicações: Nefrite, infecção urogenital, enurese noturna, impotência, lombalgia, edema, diabetes mellitus, dismenorreia e neurastenia. | B24 Qihaishu: 1,5 cun da linha do VG, ao nível de L3-L4. Indicações: Lombalgia e hemorroidas. | B25 Dachangshu: 1,5 cun lateral ao VG3, ao nível do espaço entre L4-L5. Indicações: Lombalgia, dor abdominal, borborigmo, distensão abdominal, diarreia ou constipação. | B26 Guanyuanshu: 1,5 cun da linha do VG, ao nível do espaço lombossacral (L5-S1). Indicações: Distensão abdominal, diarreia, disúria e lombalgia. | B27 Xiaochangshu: 1,5 cun da linha do VG, ao nível do espaço S1-S2, lateral ao primeiro forame sacral. Indicações: Disenteria, hematúria, leucorreia, anexite, enurese, prostatite, hemorroidas, dor nas articulações sacroilíacas e lombalgia. | B28 Pangguangshu: 1,5 cun da linha do VG, ao nível do espaço S2-S3, lateral ao segundo forame sacral. Indicações: Afecções da bexiga, enurese noturna, dor ou infecção genital, disúria, dor lombar ou lombossacra, extremidades frias e constipação. | B29 Zhonglushu: 1,5 cun da linha do VG, ao nível do espaço S3-S4, lateral ao terceiro forame sacral. Indicações: Dor na região lombossacra, ciatalgia, disenteria e hérnia. | B30 Baihuanshu: 1,5 cun da linha do VG, ao nível do espaço S4-S5, lateral ao quarto forame sacral. Indicações: Dor na região sacroilíaca, ciatalgia, disúria, enurese, constipação, leucorreia, menorragia e infecção urogenital. | B31 Shangliao: 0,75 cun da linha do VG, na borda medial do primeiro forame sacral. Indicações: Distúrbios urogenitais, distúrbios de micção e evacuação, dor na região lombossacra e joelho, ciatalgia, leucorreia, dismenorreia e impotência. | B32 Ciliao: 0,75 cun da linha do VG, na borda medial do segundo forame sacral. Indicações: Mesmas do ponto Shangliao (B31). | B33 Zhongliao: 0,75 cun da linha do VG, na borda medial do terceiro forame sacral. Indicações: Mesmas do ponto Shangliao (B31). | B34 Xialiao: 0,75 cun da linha do VG, na borda medial do quarto forame sacral. Indicações: Mesmas do ponto Shangliao (B31).",
+    "id": "1001",
+    "name": "B2 Zanzhu",
+    "description": "B2 Zanzhu",
+    "points": "Diretamente acima do B1, na incisura supraorbital, na extremidade medial da sobrancelha. Indicações: Cefaleia, tontura, doenças oculares, paralisia facial, sinusite e rinite.",
     "category": "Ponto"
   },
   {
-    "id": "880",
-    "name": "Bexiga 35-67",
-    "description": "Bexiga 35-67",
-    "points": "B35 Huiyang - 0,5 'lat para VG1 Indicações: dismenorréia e dor lombar; leucorréia; impotência; hemorróidas;dor na perna. .B36 Chengfu -ponto médio da prega glútea Indicações: dor ciática; hemorróidas; constipação; disúria; dor genital. .B37 Yinmen - pós linha média da coxa, 3 'abaixo B36, que é ponto médio da prega glútea Indicações: lombalgia e dor ciática; paralisia da perna; inchaço da perna. .B38 Fuxi - lado lat da prega poplítea, no lado med do bíceps femoral tendão, 1 'acima B39 Indicações: cistite; disúria; constipação; dor na coxa, joelho e perna. .B39 Weiyang -lado lat da prega poplítea, lat para B40, no lado med do tendão bíceps femoral Indicações: espasmo do músculo gastrocnêmio; dor lombar; prostatite ou hipertrofia benigna da próstata; hemorróidas; inchaço na axila; comportamento maníaco. .B40 Weizhong - centro da prega poplítea Categoria: Ho, Terra Indicações: dor ciática; lombalgia; paralisia da perna; dor no joelho; A.V.C;hipertranspiração. .B41 Fufen -3 'de linha VG, nível com espaço T2-T3, 1,5' lat para B12 Indicações: dor e rigidez na nuca; braquialgia. .B42 Pohu -3 'lat para VG12, nível com espaço T3-T4, 1,5' lat para B13 Indicações: bronquite; asma; pleurite; dor e rigidez na nuca; dor nas costas e ombro. .B43 Sourangshu -3 'de linha VG, nível com espaço T4-T5, 1,5' lat para B14 Indicações: bronquite; tuberculose pulmonar; pleurite; nevralgia intercostal;dor nas costas; fraqueza geral. .B44 Shentang -3 'lat para VG11, nível com espaço T5-T6, de 1,5' lat para B15 Indicações: tosse; asma; nevralgia intercostal; dor e rigidez nas costas. .B45 Yixi -3 'lat para VG10, nível com espaço T6-T7, 1,5' lat para B16 Indicações: tosse; bronquite; dor nas costas e omoplatas; tontura; soluço;pericardite. .B46 Geguan -3 'lat para VG9, nível com espaço T7-T8, 1,5' lat para B17 Indicações: nevralgia intercostal; soluço; vômito; dor e rigidez nas costas; dor no corpo; qualquer problema no sangue. .B47 Hunmen -3 'lat para VG8, nível com espaço T9-T10, 1,5' lat para B18 Indicações: moléstias do fígado; pleurite; endocardite; dispepsia; dor nas costas e coração; dor de barriga e borborigmo; epigastralgia. .B48 Yanggang -3 'lat para VG7, nível com espaço T10-T11, 1,5' lat para B19 Indicações: diarréia; dispepsia; icterícia; borborigmo; dor abdominal; cólica biliar. .B49 Yishe -3 'lat para VG6, nível com espaço T11-T12, 1,5' lat para B20 Indicações: distensão abdominal; dispepsia; hepatite; eólica biliar; diarréia; .B50 Weicang -3 'de linha VG, nível com espaço T12-L1, 1,5' lat para B21 Indicações: epigastralgia; vômitos; distensão abdominal; constipação; dor lombar. .B51 Huangmen -3 'lat para VG5, nível com espaço L1-L2, 1,5' lat para B22 Indicações: epigastralgia (dor do estômago); constipação; mastite. .B52 Zhishi -3 'lat para VG4, nível com espaço L2-L3, 1,5' lat para B23 Indicações: lombalgia; espermatorréia ou ejaculação precoce; impotência;indigestão; edema do corpo; disúria; infecção na área genital. .B53 Baohuang -3 'de linha VG, com nível médio ponto de vértebra S2 Indicações: dificuldade de evacuação e micção; paralisia da bexiga; inflamação urogenital; lombalgia; dor ciática. .B54 Zhibian -3 'lat para VG2, nível de espaço sacrococcygeal Indicações: dor na região lombossacra; dor ciática; paralisia ou adormecimento da perna; dor genital; paralisia da bexiga; cistite; disúria. .B55 Heyang -2 'abaixo B40, na linha de B57, entre cabeças med e lat de gastrocnêmio m Indicações: lombalgia; dor na perna; leucorréia; hérnia. .B56 Chengjin -5 'abaixo B40, no centro da barriga do gastrocnêmio, a meio caminho entre a B55 B57 Indicações: lombalgia; torção do músculo da perna; cãibra; hemorróidas. .B57 Chengshan- 8 'abaixo B40, 8' acima borda sup de calcâneo, a meio caminho de B40 de calcanhar Indicações: cãibra na perna; lombalgia; hemorróidas; torção da perna; anorexia. .B58 Feiyang -9 'abaixo B40, 1' lat para B57, 7 'diretamente acima B60, na borda cargo de fíbula, na borda do lat gastrocnêmio m Indicações: lombalgia; dor na perna; epilepsia; gota; oftalmalgia. .B59 Fuyang -3 'acima B60 Indicações: dor na região lombossacra; Cefaléia; torção ou artrite no tornozelo; dor e fraqueza nas pernas. .B60 Kunlun -entre as Tendo Aquiles e maléolo lat, R3 em frente Categoria: Jing, Fogo Indicações: dor de cabeça; rigidez na nuca; lombalgia; dor ciática; dor no cóccix; dor e inchaço no tornozelo; distúrbio do parto. .B61 Pucan -1.5 'abaixo B60 Indicações: dor no calcanhar; fraqueza ou paralisia da perna; lombalgia;epilepsia. .B62 Shenmai -oco abaixo maléolo lat Indicações: dor de cabeça; dor lombossacra; dor e inchaço no tornozelo; epilepsia; tontura e vertigem. .B63 Jinmen -oco por trás do tubérculo metatarsal 5, inf ant para B62 Categoria: Xi (acúmulo) Indicações: epilepsia; vertigem; surdez; dor no calcanhar. .B64 Jinggu -post borda inf do tubérculo metatarso de 5 Categoria: Yuan Indicações: dor nas costas e pernas; tontura; vertigem; epilepsia; Cefaléia;rigidez e dor na nuca. .B65 Shugu -post borda lat de cabeça de metatarso 5 Categoria: Shu, MAdeira Indicações: dor de cabeça e nuca; rigidez na nuca; dor lombar; dor na perna;dor na região oftalmo-frontal; conjuntivite; hemorróidas; epilepsia. .B66 Zutonggu -ant oco inf para metatarsofalangiana conjunta 5 Categoria: Ying, Água Indicações: dor de cabeça; epistaxe; tontura; dispepsia. .B67 Zhiyin -0,1 \"a partir da borda da unha pós-raiz do dedo mínimo do pé, lado lat Categoria: Ting, Metal Indicações: má posição do feto; dificuldade de parto; alergia na pele ou urticária; coceira na pele; Cefaléia e dor na perna; comportamento maníaco.",
+    "id": "1002",
+    "name": "B3 Meichong",
+    "description": "B3 Meichong",
+    "points": "Acima da extremidade medial da sobrancelha, 0,5 cun acima da linha do cabelo, entre o B4 e o VG24, na linha vertical do ponto Zanzhu (B2). Indicações: Cefaleia, tontura, obstrução nasal, distúrbios do olfato, lacrimejamento excessivo, conjuntivite, problemas de visão, epilepsia e catarata.",
+    "category": "Ponto"
+  },
+  {
+    "id": "1003",
+    "name": "B4 Quchai",
+    "description": "B4 Quchai",
+    "points": "1,5 cun lateral ao VG24, 0,5 cun acima da linha do cabelo. Indicações: Cefaleia frontal, obstrução nasal, epistaxe e problemas de visão.",
+    "category": "Ponto"
+  },
+  {
+    "id": "1004",
+    "name": "B5 Wuchu",
+    "description": "B5 Wuchu",
+    "points": "1,5 cun lateral ao VG23, 1 cun dentro da linha do cabelo frontal, 0,5 cun diretamente acima do B4. Indicações: Cefaleia, perturbação da visão, epilepsia e tétano.",
+    "category": "Ponto"
+  },
+  {
+    "id": "1005",
+    "name": "B6 Chengguang",
+    "description": "B6 Chengguang",
+    "points": "1,5 cun da linha do VG, 2,5 cun dentro da linha de frente, 1,5 cun atrás do B5. Indicações: Cefaleia, tontura, resfriado, distúrbios da visão, pterígio, glaucoma e miopia.",
+    "category": "Ponto"
+  },
+  {
+    "id": "1006",
+    "name": "B7 Tongtian",
+    "description": "B7 Tongtian",
+    "points": "1,5 cun da linha do VG, 4 cun dentro da linha de frente, 1,5 cun atrás do B6. Indicações: Cefaleia, sinusite, rinite, epistaxe, distúrbios do olfato, polipose nasal, rigidez na nuca e tontura.",
+    "category": "Ponto"
+  },
+  {
+    "id": "1007",
+    "name": "B8 Luoque",
+    "description": "B8 Luoque",
+    "points": "1,5 cun da linha do VG, 5,5 cun dentro da linha de frente, 1,5 cun atrás do B7. Indicações: Cefaleia parietal, tontura ou vertigem, zumbidos, obstrução nasal, paralisia facial, visão turva e glaucoma.",
+    "category": "Ponto"
+  },
+  {
+    "id": "1008",
+    "name": "B9 Yuzhen",
+    "description": "B9 Yuzhen",
+    "points": "1,3 cun lateral ao VG17, 2,5 cm acima da linha do cabelo na nuca, na borda superior lateral do processo occipital externo. Indicações: Cefaleia (occipital, parietal ou oftálmica), tontura, miopia, obstrução nasal e distúrbios do olfato.",
+    "category": "Ponto"
+  },
+  {
+    "id": "1009",
+    "name": "B10 Tianzhu",
+    "description": "B10 Tianzhu",
+    "points": "Na borda lateral do músculo trapézio, na linha do cabelo natural da região occipital. Indicações: Cefaleia occipital ou occipitotemporal, enxaqueca, dor frontal (oftálmica), torcicolo, rigidez e dor na nuca, tontura, insônia, visão turva, faringite, dor nas costas e ombros, obstrução nasal e rinite.",
+    "category": "Ponto"
+  },
+  {
+    "id": "1010",
+    "name": "B11 Dashu",
+    "description": "B11 Dashu",
+    "points": "1,5 cun lateral ao VG13, ao nível do espaço entre T1-T2. Indicações: Gripe, resfriado, tosse, rigidez e dor na nuca, dor nas costas e ombros, dor no joelho e dor de garganta.",
+    "category": "Ponto"
+  },
+  {
+    "id": "1011",
+    "name": "B12 Fengmen",
+    "description": "B12 Fengmen",
+    "points": "1,5 cun da linha do VG, ao nível do espaço entre T2-T3. Indicações: Febre, cefaleia, tosse, rigidez na nuca, dor nas costas, pneumonia, bronquite, urticária e sonolência.",
+    "category": "Ponto"
+  },
+  {
+    "id": "1012",
+    "name": "B13 Feishu",
+    "description": "B13 Feishu",
+    "points": "1,5 cun lateral ao VG12, ao nível do espaço entre T3-T4. Tonifica o Qi do Pulmão, descende e dissemina o Qi do Pulmão, clareia o calor do pulmão e libera o exterior. Indicações: Tosse, pneumonia, bronquite, dispneia, asma, tuberculose pulmonar, dor nas costas, dermatite e prurido.",
+    "category": "Ponto"
+  },
+  {
+    "id": "1013",
+    "name": "B14 Jueyinshu",
+    "description": "B14 Jueyinshu",
+    "points": "1,5 cun da linha do VG, ao nível do espaço entre T4-T5. Indicações: Dor no peito, neuralgia intercostal, dor de dente, soluço, pericardite, formigamento e frio na região distal dos membros.",
+    "category": "Ponto"
+  },
+  {
+    "id": "1014",
+    "name": "B15 Xinshu",
+    "description": "B15 Xinshu",
+    "points": "1,5 cun lateral ao VG11, ao nível do espaço entre T5-T6. Indicações: Problemas cardíacos, náuseas, vômitos, dor no peito, ansiedade, epilepsia, esquizofrenia e deficit de memória.",
+    "category": "Ponto"
+  },
+  {
+    "id": "1015",
+    "name": "B16 Dushu",
+    "description": "B16 Dushu",
+    "points": "1,5 cun lateral ao VG10, ao nível do espaço entre T6-T7. Indicações: Endocardite, dor no peito (intercostalgia), dor abdominal, soluço, queda de cabelo, prurido e borborigmo.",
+    "category": "Ponto"
+  },
+  {
+    "id": "0.1016",
+    "name": "B17 Geshu",
+    "description": "B17 Geshu",
+    "points": "1,5 cun lateral ao VG9, ao nível do espaço entre T7-T8. Indicações: Hemopatias (hemorragias, anemia), soluço, dor no peito e abdômen, falta de apetite, náuseas, sonolência, febre, suor noturno, neurose, histeria, taquicardia e tuberculose pulmonar.",
+    "category": "Ponto"
+  },
+  {
+    "id": "1017",
+    "name": "B18 Ganshu",
+    "description": "B18 Ganshu",
+    "points": "1,5 cun lateral ao VG8, ao nível do espaço entre T9-T10. Indicações: Hepatite, hepatomegalia, cirrose, colecistite, afecções dos tendões e olhos, dor nas costas, neuralgias, diabetes, furunculose, linfoadenite, distúrbios genitais e esquizofrenia.",
+    "category": "Ponto"
+  },
+  {
+    "id": "1018",
+    "name": "B19 Danshu",
+    "description": "B19 Danshu",
+    "points": "1,5 cun lateral ao VG7, ao nível do espaço entre T10-T11. Indicações: Hepatite, colecistite, dor nas costas, boca amarga, falta de apetite, náuseas, vômito e tuberculose pulmonar.",
+    "category": "Ponto"
+  },
+  {
+    "id": "1019",
+    "name": "B20 Pishu",
+    "description": "B20 Pishu",
+    "points": "1,5 cun lateral ao VG6, ao nível do espaço entre T11-T12. Indicações: Anorexia, dor gástrica, úlcera péptica, emagrecimento, hepatite, cirrose, dispepsia, regurgitação, diarreia crônica e distensão abdominal.",
+    "category": "Ponto"
+  },
+  {
+    "id": "1020",
+    "name": "B21 Weishu",
+    "description": "B21 Weishu",
+    "points": "1,5 cun da linha do VG, ao nível do espaço entre T12-L1. Indicações: Gastralgia, úlcera péptica, distensão gástrica, dispepsia, anorexia, náuseas, vômito, regurgitação, borborigmo e emagrecimento.",
+    "category": "Ponto"
+  },
+  {
+    "id": "1021",
+    "name": "B22 Sanjiaoshu",
+    "description": "B22 Sanjiaoshu",
+    "points": "1,5 cun lateral ao VG5, ao nível do espaço entre L1-L2. Indicações: Diabetes mellitus, anorexia, dispepsia, indigestão, diarreia, distensão abdominal, borborigmo, ascite, edema e lombalgia.",
+    "category": "Ponto"
+  },
+  {
+    "id": "1022",
+    "name": "B23 Shenshu",
+    "description": "B23 Shenshu",
+    "points": "1,5 cun lateral ao VG4, ao nível do espaço entre L2-L3. Indicações: Nefrite, infecção urogenital, enurese noturna, impotência, lombalgia, edema, diabetes mellitus, dismenorreia e neurastenia.",
+    "category": "Ponto"
+  },
+  {
+    "id": "1023",
+    "name": "B24 Qihaishu",
+    "description": "B24 Qihaishu",
+    "points": "1,5 cun da linha do VG, ao nível de L3-L4. Indicações: Lombalgia e hemorroidas.",
+    "category": "Ponto"
+  },
+  {
+    "id": "1024",
+    "name": "B25 Dachangshu",
+    "description": "B25 Dachangshu",
+    "points": "1,5 cun lateral ao VG3, ao nível do espaço entre L4-L5. Indicações: Lombalgia, dor abdominal, borborigmo, distensão abdominal, diarreia ou constipação.",
+    "category": "Ponto"
+  },
+  {
+    "id": "1025",
+    "name": "B26 Guanyuanshu",
+    "description": "B26 Guanyuanshu",
+    "points": "1,5 cun da linha do VG, ao nível do espaço lombossacral (L5-S1). Indicações: Distensão abdominal, diarreia, disúria e lombalgia.",
+    "category": "Ponto"
+  },
+  {
+    "id": "1026",
+    "name": "B27 Xiaochangshu",
+    "description": "B27 Xiaochangshu",
+    "points": "1,5 cun da linha do VG, ao nível do espaço S1-S2, lateral ao primeiro forame sacral. Indicações: Disenteria, hematúria, leucorreia, anexite, enurese, prostatite, hemorroidas, dor nas articulações sacroilíacas e lombalgia.",
+    "category": "Ponto"
+  },
+  {
+    "id": "1027",
+    "name": "B28 Pangguangshu",
+    "description": "B28 Pangguangshu",
+    "points": "1,5 cun da linha do VG, ao nível do espaço S2-S3, lateral ao segundo forame sacral. Indicações: Afecções da bexiga, enurese noturna, dor ou infecção genital, disúria, dor lombar ou lombossacra, extremidades frias e constipação.",
+    "category": "Ponto"
+  },
+  {
+    "id": "1028",
+    "name": "B29 Zhonglushu",
+    "description": "B29 Zhonglushu",
+    "points": "1,5 cun da linha do VG, ao nível do espaço S3-S4, lateral ao terceiro forame sacral. Indicações: Dor na região lombossacra, ciatalgia, disenteria e hérnia.",
+    "category": "Ponto"
+  },
+  {
+    "id": "1029",
+    "name": "B30 Baihuanshu",
+    "description": "B30 Baihuanshu",
+    "points": "1,5 cun da linha do VG, ao nível do espaço S4-S5, lateral ao quarto forame sacral. Indicações: Dor na região sacroilíaca, ciatalgia, disúria, enurese, constipação, leucorreia, menorragia e infecção urogenital.",
+    "category": "Ponto"
+  },
+  {
+    "id": "1030",
+    "name": "B31 Shangliao",
+    "description": "B31 Shangliao",
+    "points": "0,75 cun da linha do VG, na borda medial do primeiro forame sacral. Indicações: Distúrbios urogenitais, distúrbios de micção e evacuação, dor na região lombossacra e joelho, ciatalgia, leucorreia, dismenorreia e impotência.",
+    "category": "Ponto"
+  },
+  {
+    "id": "1031",
+    "name": "B32 Ciliao",
+    "description": "B32 Ciliao",
+    "points": "0,75 cun da linha do VG, na borda medial do segundo forame sacral. Indicações: Mesmas do ponto Shangliao (B31).",
+    "category": "Ponto"
+  },
+  {
+    "id": "1032",
+    "name": "B33 Zhongliao",
+    "description": "B33 Zhongliao",
+    "points": "0,75 cun da linha do VG, na borda medial do terceiro forame sacral. Indicações: Mesmas do ponto Shangliao (B31).",
+    "category": "Ponto"
+  },
+  {
+    "id": "1033",
+    "name": "B34 Xialiao",
+    "description": "B34 Xialiao",
+    "points": "0,75 cun da linha do VG, na borda medial do quarto forame sacral. Indicações: Mesmas do ponto Shangliao (B31).",
+    "category": "Ponto"
+  },
+  {
+    "id": "1034",
+    "name": "B35 Huiyang",
+    "description": "B35 Huiyang",
+    "points": "0,5 cun lateral para VG1. Indicações: dismenorréia e dor lombar; leucorréia; impotência; hemorróidas; dor na perna.",
+    "category": "Ponto"
+  },
+  {
+    "id": "1035",
+    "name": "B36 Chengfu",
+    "description": "B36 Chengfu",
+    "points": "Ponto médio da prega glútea. Indicações: dor ciática; hemorróidas; constipação; disúria; dor genital.",
+    "category": "Ponto"
+  },
+  {
+    "id": "1036",
+    "name": "B37 Yinmen",
+    "description": "B37 Yinmen",
+    "points": "Pós linha média da coxa, 3 cun abaixo B36, que é ponto médio da prega glútea. Indicações: lombalgia e dor ciática; paralisia da perna; inchaço da perna.",
+    "category": "Ponto"
+  },
+  {
+    "id": "1037",
+    "name": "B38 Fuxi",
+    "description": "B38 Fuxi",
+    "points": "Lado lateral da prega poplítea, no lado medial do tendão bíceps femoral, 1 cun acima B39. Indicações: cistite; disúria; constipação; dor na coxa, joelho e perna.",
+    "category": "Ponto"
+  },
+  {
+    "id": "1038",
+    "name": "B39 Weiyang",
+    "description": "B39 Weiyang",
+    "points": "Lado lateral da prega poplítea, lateral para B40, no lado medial do tendão bíceps femoral. Indicações: espasmo do músculo gastrocnêmio; dor lombar; prostatite ou hipertrofia benigna da próstata; hemorróidas; inchaço na axila; comportamento maníaco.",
+    "category": "Ponto"
+  },
+  {
+    "id": "1039",
+    "name": "B40 Weizhong",
+    "description": "B40 Weizhong",
+    "points": "Centro da prega poplítea. Categoria: Ho, Terra. Indicações: dor ciática; lombalgia; paralisia da perna; dor no joelho; A.V.C; hipertranspiração.",
+    "category": "Ponto"
+  },
+  {
+    "id": "1040",
+    "name": "B41 Fufen",
+    "description": "B41 Fufen",
+    "points": "3 cun da linha VG, nível com espaço T2-T3, 1,5 cun lateral para B12. Indicações: dor e rigidez na nuca; braquialgia.",
+    "category": "Ponto"
+  },
+  {
+    "id": "1041",
+    "name": "B42 Pohu",
+    "description": "B42 Pohu",
+    "points": "3 cun lateral para VG12, nível com espaço T3-T4, 1,5 cun lateral para B13. Indicações: bronquite; asma; pleurite; dor e rigidez na nuca; dor nas costas e ombro.",
+    "category": "Ponto"
+  },
+  {
+    "id": "1042",
+    "name": "B43 Gaohuangshu",
+    "description": "B43 Gaohuangshu",
+    "points": "3 cun da linha VG, nível com espaço T4-T5, 1,5 cun lateral para B14. Indicações: bronquite; tuberculose pulmonar; pleurite; nevralgia intercostal; dor nas costas; fraqueza geral.",
+    "category": "Ponto"
+  },
+  {
+    "id": "1043",
+    "name": "B44 Shentang",
+    "description": "B44 Shentang",
+    "points": "3 cun lateral para VG11, nível com espaço T5-T6, 1,5 cun lateral para B15. Indicações: tosse; asma; nevralgia intercostal; dor e rigidez nas costas.",
+    "category": "Ponto"
+  },
+  {
+    "id": "1044",
+    "name": "B45 Yixi",
+    "description": "B45 Yixi",
+    "points": "3 cun lateral para VG10, nível com espaço T6-T7, 1,5 cun lateral para B16. Indicações: tosse; bronquite; dor nas costas e omoplatas; tontura; soluço; pericardite.",
+    "category": "Ponto"
+  },
+  {
+    "id": "1045",
+    "name": "B46 Geguan",
+    "description": "B46 Geguan",
+    "points": "3 cun lateral para VG9, nível com espaço T7-T8, 1,5 cun lateral para B17. Indicações: nevralgia intercostal; soluço; vômito; dor e rigidez nas costas; dor no corpo; qualquer problema no sangue.",
+    "category": "Ponto"
+  },
+  {
+    "id": "1046",
+    "name": "B47 Hunmen",
+    "description": "B47 Hunmen",
+    "points": "3 cun lateral para VG8, nível com espaço T9-T10, 1,5 cun lateral para B18. Indicações: moléstias do fígado; pleurite; endocardite; dispepsia; dor nas costas e coração; dor de barriga e borborigmo; epigastralgia.",
+    "category": "Ponto"
+  },
+  {
+    "id": "1047",
+    "name": "B48 Yanggang",
+    "description": "B48 Yanggang",
+    "points": "3 cun lateral para VG7, nível com espaço T10-T11, 1,5 cun lateral para B19. Indicações: diarréia; dispepsia; icterícia; borborigmo; dor abdominal; cólica biliar.",
+    "category": "Ponto"
+  },
+  {
+    "id": "1048",
+    "name": "B49 Yishe",
+    "description": "B49 Yishe",
+    "points": "3 cun lateral para VG6, nível com espaço T11-T12, 1,5 cun lateral para B20. Indicações: distensão abdominal; dispepsia; hepatite; cólica biliar; diarréia.",
+    "category": "Ponto"
+  },
+  {
+    "id": "1049",
+    "name": "B50 Weicang",
+    "description": "B50 Weicang",
+    "points": "3 cun da linha VG, nível com espaço T12-L1, 1,5 cun lateral para B21. Indicações: epigastralgia; vômitos; distensão abdominal; constipação; dor lombar.",
+    "category": "Ponto"
+  },
+  {
+    "id": "1050",
+    "name": "B51 Huangmen",
+    "description": "B51 Huangmen",
+    "points": "3 cun lateral para VG5, nível com espaço L1-L2, 1,5 cun lateral para B22. Indicações: epigastralgia (dor do estômago); constipação; mastite.",
+    "category": "Ponto"
+  },
+  {
+    "id": "1051",
+    "name": "B52 Zhishi",
+    "description": "B52 Zhishi",
+    "points": "3 cun lateral para VG4, nível com espaço L2-L3, 1,5 cun lateral para B23. Indicações: lombalgia; espermatorréia ou ejaculação precoce; impotência; indigestão; edema do corpo; disúria; infecção na área genital.",
+    "category": "Ponto"
+  },
+  {
+    "id": "1052",
+    "name": "B53 Baohuang",
+    "description": "B53 Baohuang",
+    "points": "3 cun da linha VG, com nível médio ponto de vértebra S2. Indicações: dificuldade de evacuação e micção; paralisia da bexiga; inflamação urogenital; lombalgia; dor ciática.",
+    "category": "Ponto"
+  },
+  {
+    "id": "1053",
+    "name": "B54 Zhibian",
+    "description": "B54 Zhibian",
+    "points": "3 cun lateral para VG2, nível de espaço sacrococcygeal. Indicações: dor na região lombossacra; dor ciática; paralisia ou adormecimento da perna; dor genital; paralisia da bexiga; cistite; disúria.",
+    "category": "Ponto"
+  },
+  {
+    "id": "1054",
+    "name": "B55 Heyang",
+    "description": "B55 Heyang",
+    "points": "2 cun abaixo B40, na linha de B57, entre cabeças medial e lateral do músculo gastrocnêmio. Indicações: lombalgia; dor na perna; leucorréia; hérnia.",
+    "category": "Ponto"
+  },
+  {
+    "id": "1055",
+    "name": "B56 Chengjin",
+    "description": "B56 Chengjin",
+    "points": "5 cun abaixo B40, no centro da barriga do gastrocnêmio, a meio caminho entre B55 e B57. Indicações: lombalgia; torção do músculo da perna; cãibra; hemorróidas.",
+    "category": "Ponto"
+  },
+  {
+    "id": "1056",
+    "name": "B57 Chengshan",
+    "description": "B57 Chengshan",
+    "points": "8 cun abaixo B40, 8 cun acima borda superior do calcâneo, a meio caminho de B40 ao calcanhar. Indicações: cãibra na perna; lombalgia; hemorróidas; torção da perna; anorexia.",
+    "category": "Ponto"
+  },
+  {
+    "id": "1057",
+    "name": "B58 Feiyang",
+    "description": "B58 Feiyang",
+    "points": "9 cun abaixo B40, 1 cun lateral para B57, 7 cun diretamente acima B60, na borda da fíbula, na borda lateral do gastrocnêmio. Indicações: lombalgia; dor na perna; epilepsia; gota; oftalmalgia.",
+    "category": "Ponto"
+  },
+  {
+    "id": "1058",
+    "name": "B59 Fuyang",
+    "description": "B59 Fuyang",
+    "points": "3 cun acima B60. Indicações: dor na região lombossacra; Cefaléia; torção ou artrite no tornozelo; dor e fraqueza nas pernas.",
+    "category": "Ponto"
+  },
+  {
+    "id": "1059",
+    "name": "B60 Kunlun",
+    "description": "B60 Kunlun",
+    "points": "Entre o Tendão de Aquiles e o maléolo lateral. Categoria: Jing, Fogo. Indicações: dor de cabeça; rigidez na nuca; lombalgia; dor ciática; dor no cóccix; dor e inchaço no tornozelo; distúrbio do parto.",
+    "category": "Ponto"
+  },
+  {
+    "id": "1060",
+    "name": "B61 Pucan",
+    "description": "B61 Pucan",
+    "points": "1,5 cun abaixo B60. Indicações: dor no calcanhar; fraqueza ou paralisia da perna; lombalgia; epilepsia.",
+    "category": "Ponto"
+  },
+  {
+    "id": "1061",
+    "name": "B62 Shenmai",
+    "description": "B62 Shenmai",
+    "points": "Oco abaixo do maléolo lateral. Indicações: dor de cabeça; dor lombossacra; dor e inchaço no tornozelo; epilepsia; tontura e vertigem.",
+    "category": "Ponto"
+  },
+  {
+    "id": "1062",
+    "name": "B63 Jinmen",
+    "description": "B63 Jinmen",
+    "points": "Oco por trás do tubérculo metatarsal 5, inferior anterior para B62. Categoria: Xi (acúmulo). Indicações: epilepsia; vertigem; surdez; dor no calcanhar.",
+    "category": "Ponto"
+  },
+  {
+    "id": "1063",
+    "name": "B64 Jinggu",
+    "description": "B64 Jinggu",
+    "points": "Posterior à borda inferior do tubérculo metatarso de 5. Categoria: Yuan. Indicações: dor nas costas e pernas; tontura; vertigem; epilepsia; Cefaléia; rigidez e dor na nuca.",
+    "category": "Ponto"
+  },
+  {
+    "id": "1064",
+    "name": "B65 Shugu",
+    "description": "B65 Shugu",
+    "points": "Posterior à borda lateral da cabeça do metatarso 5. Categoria: Shu, Madeira. Indicações: dor de cabeça e nuca; rigidez na nuca; dor lombar; dor na perna; dor na região oftalmo-frontal; conjuntivite; hemorróidas; epilepsia.",
+    "category": "Ponto"
+  },
+  {
+    "id": "1065",
+    "name": "B66 Zutonggu",
+    "description": "B66 Zutonggu",
+    "points": "Anterior ao oco inferior para metatarsofalangiana conjunta 5. Categoria: Ying, Água. Indicações: dor de cabeça; epistaxe; tontura; dispepsia.",
+    "category": "Ponto"
+  },
+  {
+    "id": "1066",
+    "name": "B67 Zhiyin",
+    "description": "B67 Zhiyin",
+    "points": "0,1 cun a partir da borda da unha póstero-raiz do dedo mínimo do pé, lado lateral. Categoria: Ting, Metal. Indicações: má posição do feto; dificuldade de parto; alergia na pele ou urticária; coceira na pele; Cefaléia e dor na perna; comportamento maníaco.",
     "category": "Ponto"
   },
   {
